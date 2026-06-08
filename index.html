@@ -2,8 +2,8 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<meta name="theme-color" content="#080b14"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#06080f"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>PAW | فیلم و سریال</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -12,489 +12,728 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080b14;--surface:#0f1623;--card:#131929;--card-h:#1c2540;
-  --accent:#e50914;--gold:#f5c518;--blue:#3b82f6;--green:#22c55e;
-  --text:#e8eaf0;--muted:#7a8299;--border:rgba(255,255,255,.07);
-  --nav:64px;--safe:env(safe-area-inset-bottom,0px);
+  --bg:#06080f;--surface:#0d1120;--card:#111827;--card-h:#192035;
+  --accent:#e50914;--gold:#f5c518;--blue:#3b82f6;--purple:#8b5cf6;
+  --green:#22c55e;--pink:#ec4899;--orange:#f97316;
+  --text:#e8eaf0;--muted:#64748b;--border:rgba(255,255,255,.06);
+  --nav:62px;--safe:env(safe-area-inset-bottom,0px);
+  --header:56px;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',sans-serif;
-  min-height:100vh;overflow-x:hidden;padding-bottom:calc(var(--nav) + var(--safe))}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--surface)}
-::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px}
+  padding-bottom:calc(var(--nav)+var(--safe));overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(229,9,20,.5);border-radius:2px}
 
-/* HEADER */
+/* ─── HEADER ─── */
 header{
-  position:sticky;top:0;z-index:90;height:56px;padding:0 16px;
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(8,11,20,.93);backdrop-filter:blur(14px);
+  position:sticky;top:0;z-index:100;height:var(--header);
+  padding:0 16px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,8,15,.92);backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
 }
-.logo{font-size:22px;font-weight:900;letter-spacing:3px;color:var(--accent);
-  text-shadow:0 0 24px rgba(229,9,20,.5)}
-.logo sub{font-size:10px;font-weight:400;letter-spacing:.5px;color:var(--muted);
-  vertical-align:middle;margin-right:4px}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-text{font-size:20px;font-weight:900;letter-spacing:3px;color:var(--accent);
+  text-shadow:0 0 20px rgba(229,9,20,.6)}
+.logo-sub{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.3px}
+.search-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.07);
+  border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);transition:all .2s}
+.search-btn:hover{background:rgba(255,255,255,.12);color:var(--text)}
+.search-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
 
-/* LOADING */
-.loading-bar{height:3px;background:linear-gradient(90deg,var(--accent),#ff6b6b,var(--accent));
-  background-size:200% 100%;animation:loading 1.4s infinite}
-@keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
+/* ─── LOADING BAR ─── */
+#topbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:999;display:none;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--gold),var(--accent),transparent);
+  background-size:300% 100%;animation:slide 1.2s infinite}
+@keyframes slide{0%{background-position:100% 0}100%{background-position:-100% 0}}
 
-/* TABS */
-.tab-page{display:none}.tab-page.active{display:block}
+/* ─── TABS ─── */
+.page{display:none}.page.on{display:block}
 
-/* BOTTOM NAV */
-.bottom-nav{
+/* ─── BOTTOM NAV ─── */
+.bnav{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
-  height:calc(var(--nav) + var(--safe));padding-bottom:var(--safe);
-  background:rgba(8,11,20,.97);backdrop-filter:blur(16px);
-  border-top:1px solid var(--border);display:flex;
+  height:calc(var(--nav)+var(--safe));padding-bottom:var(--safe);
+  background:rgba(6,8,15,.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);display:flex;align-items:stretch;
 }
-.nav-btn{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  border:none;background:none;cursor:pointer;color:var(--muted);
-  font-family:'Vazirmatn',sans-serif;font-size:11px;font-weight:500;transition:color .2s;
+.nbtn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;border:none;background:none;cursor:pointer;padding:8px 4px;
+  color:var(--muted);font-family:'Vazirmatn',sans-serif;font-size:10px;font-weight:600;
+  transition:color .2s;position:relative;
 }
-.nav-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;transition:all .2s}
-.nav-btn.active{color:var(--accent)}
-.nav-btn.active svg{stroke:var(--accent);filter:drop-shadow(0 0 6px rgba(229,9,20,.6))}
+.nbtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;transition:all .2s}
+.nbtn.on{color:var(--accent)}
+.nbtn.on svg{stroke:var(--accent);filter:drop-shadow(0 0 5px rgba(229,9,20,.7))}
+.nbtn.on::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+  background:var(--accent);border-radius:0 0 2px 2px}
 
-/* HERO */
+/* ─── HERO ─── */
 .hero{
-  position:relative;height:72vw;max-height:480px;min-height:260px;
-  display:flex;align-items:flex-end;padding:0 16px 24px;overflow:hidden;
+  position:relative;height:58vw;max-height:400px;min-height:240px;
+  display:flex;align-items:flex-end;padding:0 16px 20px;overflow:hidden;
 }
-.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0d1f3c,#1a0a1e,#050108)}
-.hero-bg::before{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 25% 60%,rgba(229,9,20,.2) 0%,transparent 60%),
-             radial-gradient(ellipse at 75% 20%,rgba(59,130,246,.15) 0%,transparent 50%)}
-.hero-img{position:absolute;inset:0;object-fit:cover;width:100%;height:100%;opacity:.3}
+.hero-bg{position:absolute;inset:0}
+.hero-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28}
 .hero-grad{position:absolute;inset:0;
-  background:linear-gradient(to top,var(--bg) 0%,rgba(8,11,20,.55) 40%,rgba(8,11,20,.1) 100%)}
+  background:linear-gradient(to top,var(--bg) 0%,rgba(6,8,15,.6) 45%,rgba(6,8,15,.05) 100%),
+             linear-gradient(to left,rgba(6,8,15,.7) 0%,transparent 60%)}
+.hero-decor{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 70%,rgba(229,9,20,.2) 0%,transparent 55%)}
 .hero-content{position:relative;width:100%}
-.hero-title{font-size:clamp(1.3rem,5.5vw,2.2rem);font-weight:900;color:#fff;
-  line-height:1.15;margin-bottom:6px;text-shadow:0 2px 16px rgba(0,0,0,.6)}
-.hero-sub{font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:.3px}
-.hero-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;font-size:12px;color:var(--muted)}
-.hero-row .star{color:var(--gold);font-weight:700}
-.dot{width:3px;height:3px;background:var(--muted);border-radius:50%}
-.btn-play{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--accent);color:#fff;border:none;
-  padding:10px 22px;border-radius:10px;
-  font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(229,9,20,.45);
+.hero-tags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.htag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700}
+.ht-type{background:var(--accent);color:#fff}
+.ht-year{background:rgba(245,197,24,.15);color:var(--gold);border:1px solid rgba(245,197,24,.3)}
+.ht-cat{background:rgba(255,255,255,.08);color:var(--muted)}
+.hero-title{font-size:clamp(1.15rem,5vw,2rem);font-weight:900;color:#fff;
+  line-height:1.2;margin-bottom:4px;text-shadow:0 1px 12px rgba(0,0,0,.8)}
+.hero-desc{font-size:11px;color:rgba(232,234,240,.6);line-height:1.6;
+  margin-bottom:14px;max-width:400px;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-btns{display:flex;gap:8px}
+.hbtn{display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;
+  font-family:'Vazirmatn',sans-serif;font-weight:700;border-radius:9px;transition:all .2s}
+.hbtn-play{background:var(--accent);color:#fff;padding:9px 20px;font-size:13px;
+  box-shadow:0 3px 16px rgba(229,9,20,.5)}
+.hbtn-play:hover{background:#c1070f;transform:translateY(-1px)}
+.hbtn-play svg{width:14px;height:14px;fill:white}
+.hbtn-info{background:rgba(255,255,255,.12);color:var(--text);padding:9px 16px;font-size:12px;
+  border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(4px)}
+.hbtn-info:hover{background:rgba(255,255,255,.2)}
+
+/* ─── SECTION ─── */
+.sec{margin:0 0 28px}
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;margin-bottom:12px;
 }
-.btn-play:hover{background:#c1070f;transform:translateY(-1px)}
-.btn-play svg{width:16px;height:16px;fill:white;flex-shrink:0}
+.sec-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:#fff}
+.sec-icon{font-size:16px}
+.sec-bar{width:3px;height:16px;border-radius:2px;flex-shrink:0}
+.see-all{font-size:11px;color:var(--muted);cursor:pointer;transition:color .2s}
+.see-all:hover{color:var(--accent)}
 
-/* SECTION */
-.section{margin:20px 0 28px}
-.section-head{display:flex;align-items:center;gap:8px;margin:0 16px 14px;
-  font-size:16px;font-weight:700;color:#fff}
-.section-head::before{content:'';width:4px;height:18px;background:var(--accent);
-  border-radius:2px;display:block;flex-shrink:0}
+/* ─── HORIZONTAL SCROLL ─── */
+.hscroll{display:flex;gap:10px;padding:0 12px;overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.hscroll .card{flex-shrink:0;width:130px;scroll-snap-align:start}
+@media(min-width:480px){.hscroll .card{width:150px}}
 
-/* GRID */
+/* ─── GRID (full page) ─── */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 12px}
 @media(min-width:480px){.grid{grid-template-columns:repeat(4,1fr)}}
 @media(min-width:640px){.grid{grid-template-columns:repeat(5,1fr)}}
 @media(min-width:900px){.grid{grid-template-columns:repeat(6,1fr)}}
 
-/* CARD */
-.card{background:var(--card);border-radius:10px;overflow:hidden;
-  cursor:pointer;border:1px solid var(--border);transition:transform .25s,box-shadow .25s}
-.card:hover{transform:translateY(-4px) scale(1.02);
-  box-shadow:0 12px 32px rgba(0,0,0,.5),0 0 0 1px rgba(229,9,20,.25)}
-.card:active{transform:scale(.96)}
+/* ─── CARD ─── */
+.card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;
+  border:1px solid var(--border);transition:transform .22s,box-shadow .22s}
+.card:hover{transform:translateY(-5px) scale(1.025);
+  box-shadow:0 10px 28px rgba(0,0,0,.55),0 0 0 1px rgba(229,9,20,.2)}
+.card:active{transform:scale(.95)}
 .card-poster{position:relative;aspect-ratio:2/3;overflow:hidden;
   background:linear-gradient(145deg,#1a2236,#0d1322)}
-.card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.card:hover .card-poster img{transform:scale(1.07)}
+.card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s;display:block}
+.card:hover .card-poster img{transform:scale(1.06)}
 .card-ph{width:100%;height:100%;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:6px;font-size:26px;color:#2a3550}
-.card-ph span{font-size:9px;color:var(--muted);text-align:center;
-  padding:0 6px;line-height:1.4;max-width:100%}
-.card-badge{position:absolute;top:6px;right:6px;font-size:9px;font-weight:700;
-  padding:2px 6px;border-radius:4px;color:#fff}
+  align-items:center;justify-content:center;gap:5px;color:#1e2d45;font-size:24px}
+.card-ph span{font-size:8px;color:var(--muted);text-align:center;padding:0 4px;line-height:1.4}
+.card-badge{position:absolute;top:6px;right:6px;font-size:8px;font-weight:800;
+  padding:2px 5px;border-radius:4px;color:#fff;letter-spacing:.3px}
 .b-red{background:var(--accent)}.b-blue{background:var(--blue)}
-.card-overlay{position:absolute;inset:0;background:rgba(0,0,0,.45);
-  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
-.card:hover .card-overlay{opacity:1}
-.play-circle{width:44px;height:44px;background:var(--accent);border-radius:50%;
+.b-purple{background:var(--purple)}.b-pink{background:var(--pink)}
+.b-green{background:var(--green)}.b-orange{background:var(--orange)}
+.card-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .22s}
+.card:hover .card-ov{opacity:1}
+.pcircle{width:40px;height:40px;background:var(--accent);border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 16px rgba(229,9,20,.6)}
-.play-circle svg{width:18px;height:18px;fill:white;margin-right:-2px}
-.card-info{padding:8px 8px 10px}
-.card-title{font-size:11px;font-weight:600;color:#fff;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis;margin-bottom:4px}
-.card-meta{display:flex;justify-content:space-between;font-size:10px;color:var(--muted)}
-.card-rating{color:var(--gold);font-weight:700}
+  box-shadow:0 3px 14px rgba(229,9,20,.7)}
+.pcircle svg{width:16px;height:16px;fill:white;margin-right:-2px}
+.card-info{padding:7px 8px 9px}
+.card-title{font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.card-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--muted)}
+.crating{color:var(--gold);font-weight:700}
 
-/* PAGE HEADER */
-.page-hd{padding:16px 16px 4px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.page-title{font-size:20px;font-weight:800;color:#fff}
-.count-badge{background:rgba(229,9,20,.15);color:var(--accent);border:1px solid rgba(229,9,20,.3);
-  font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+/* ─── PAGE HEADER ─── */
+.pg-head{padding:14px 16px 2px;margin-bottom:10px}
+.pg-title{font-size:19px;font-weight:800;color:#fff}
+.pg-sub{font-size:12px;color:var(--muted);margin-top:3px}
 
-/* STATUS */
-.status{text-align:center;padding:48px 24px;color:var(--muted)}
-.status-icon{font-size:48px;margin-bottom:12px}
-.status p{font-size:14px;line-height:1.7}
-.status .retry-btn{
-  margin-top:16px;display:inline-flex;align-items:center;gap:6px;
-  background:var(--accent);color:#fff;border:none;padding:10px 20px;border-radius:8px;
-  font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;cursor:pointer;
-}
+/* ─── STATUS ─── */
+.status{text-align:center;padding:40px 24px;color:var(--muted)}
+.sicon{font-size:44px;margin-bottom:10px}
+.status p{font-size:13px;line-height:1.7}
 
-/* MODAL */
-.overlay{
-  position:fixed;inset:0;z-index:300;
-  background:rgba(0,0,0,.94);backdrop-filter:blur(14px);
-  display:flex;align-items:flex-end;
-  opacity:0;pointer-events:none;transition:opacity .25s;
-}
-@media(min-width:640px){.overlay{align-items:center;padding:16px}}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{
-  background:var(--surface);width:100%;
-  border-radius:20px 20px 0 0;overflow:hidden;
-  border:1px solid var(--border);box-shadow:0 -8px 40px rgba(0,0,0,.7);
-  transform:translateY(40px);transition:transform .3s;
-  max-height:95vh;overflow-y:auto;
-}
-@media(min-width:640px){
-  .modal{border-radius:16px;max-width:900px;margin:auto;transform:scale(.95)}
-}
-.overlay.open .modal{transform:translateY(0)}
-@media(min-width:640px){.overlay.open .modal{transform:scale(1)}}
-.drag-handle{width:40px;height:4px;background:rgba(255,255,255,.15);
-  border-radius:2px;margin:12px auto 4px}
-.modal-top{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px}
-.modal-name{font-size:14px;font-weight:700;color:#fff;flex:1;margin-left:8px;
+/* ─── SEARCH OVERLAY ─── */
+.sovl{position:fixed;inset:0;z-index:500;background:rgba(6,8,15,.97);
+  opacity:0;pointer-events:none;transition:opacity .2s;padding:12px 16px}
+.sovl.on{opacity:1;pointer-events:all}
+.sbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sinput{flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;font-family:'Vazirmatn',sans-serif;
+  font-size:14px;color:var(--text);outline:none;text-align:right}
+.sinput::placeholder{color:var(--muted)}
+.sclose{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;padding:4px}
+#s-results{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow-y:auto;
+  max-height:calc(100vh - 80px)}
+@media(min-width:480px){#s-results{grid-template-columns:repeat(4,1fr)}}
+
+/* ─── MODAL ─── */
+.ovl{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.95);backdrop-filter:blur(16px);
+  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+@media(min-width:640px){.ovl{align-items:center;padding:20px}}
+.ovl.on{opacity:1;pointer-events:all}
+.modal{background:var(--surface);width:100%;border-radius:20px 20px 0 0;overflow:hidden;
+  border:1px solid var(--border);box-shadow:0 -6px 40px rgba(0,0,0,.7);
+  transform:translateY(50px);transition:transform .3s;max-height:94vh;overflow-y:auto}
+@media(min-width:640px){.modal{border-radius:14px;max-width:920px;margin:auto;transform:scale(.94)}}
+.ovl.on .modal{transform:translateY(0)}
+@media(min-width:640px){.ovl.on .modal{transform:scale(1)}}
+.drag{width:38px;height:4px;background:rgba(255,255,255,.14);border-radius:2px;margin:10px auto 0}
+.mtop{display:flex;align-items:center;gap:8px;padding:10px 14px 12px}
+.mname{font-size:13px;font-weight:700;color:#fff;flex:1;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.modal-close{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);
-  border:none;cursor:pointer;color:var(--muted);flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;transition:background .2s}
-.modal-close:hover{background:var(--accent);color:#fff}
-.modal-close svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5}
+.mclose{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);border:none;
+  cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .2s}
+.mclose:hover{background:var(--accent);color:#fff}
+.mclose svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5}
 .player{position:relative;width:100%;aspect-ratio:16/9;background:#000}
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
-.modal-info{padding:16px;display:flex;gap:14px}
-.mposter{flex-shrink:0;width:80px;height:120px;border-radius:8px;overflow:hidden;background:var(--card)}
+.mdetail{padding:14px;display:flex;gap:12px}
+.mposter{flex-shrink:0;width:76px;height:114px;border-radius:8px;overflow:hidden;background:var(--card)}
 .mposter img{width:100%;height:100%;object-fit:cover}
-.mposter .card-ph{font-size:22px}
-.mtext{flex:1;min-width:0}
-.mtext h3{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px}
-.mtext .orig{font-size:11px;color:var(--muted);margin-bottom:10px}
-.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.tag{display:inline-flex;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:600}
-.t-red{background:var(--accent);color:#fff}
-.t-blue{background:rgba(59,130,246,.18);color:#93c5fd;border:1px solid rgba(59,130,246,.25)}
-.t-gold{background:rgba(245,197,24,.12);color:var(--gold);border:1px solid rgba(245,197,24,.25)}
-.t-muted{background:rgba(255,255,255,.07);color:var(--muted)}
-.mdesc{font-size:12px;color:var(--muted);line-height:1.7}
+.mposter .card-ph{font-size:20px}
+.minfo{flex:1;min-width:0}
+.minfo h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px}
+.minfo .msub{font-size:11px;color:var(--muted);margin-bottom:8px}
+.mtags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.tred{background:var(--accent);color:#fff}
+.tblue{background:rgba(59,130,246,.18);color:#93c5fd;border:1px solid rgba(59,130,246,.25)}
+.tgold{background:rgba(245,197,24,.12);color:var(--gold);border:1px solid rgba(245,197,24,.25)}
+.tmuted{background:rgba(255,255,255,.07);color:var(--muted)}
+.mdesc-text{font-size:11px;color:var(--muted);line-height:1.7;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.open-site{display:block;width:calc(100% - 28px);margin:0 14px 14px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);
+  font-family:'Vazirmatn',sans-serif;font-size:12px;padding:9px;border-radius:8px;
+  cursor:pointer;text-align:center;transition:all .2s}
+.open-site:hover{background:rgba(255,255,255,.12);color:var(--text)}
 </style>
 </head>
 <body>
 
+<div id="topbar"></div>
+
 <header>
-  <span class="logo">PAW<sub>فیلم و سریال</sub></span>
-  <div id="loading-bar" style="display:none" class="loading-bar" style="position:absolute;top:0;left:0;right:0;height:3px"></div>
+  <div class="logo">
+    <span class="logo-text">PAW</span>
+    <span class="logo-sub">فیلم و سریال</span>
+  </div>
+  <button class="search-btn" onclick="openSearch()">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+  </button>
 </header>
 
-<!-- PAGES -->
-<div class="tab-page active" id="page-home">
+<!-- ═══ PAGES ═══ -->
+
+<!-- HOME -->
+<div class="page on" id="pg-home">
   <div class="hero" id="hero">
-    <div class="hero-bg"></div>
-    <img class="hero-img" id="hero-img" src="" alt="" style="display:none"/>
-    <div class="hero-grad"></div>
+    <div class="hero-bg">
+      <img class="hero-cover" id="hero-cover" src="" alt="" style="display:none"/>
+      <div class="hero-decor"></div>
+      <div class="hero-grad"></div>
+    </div>
     <div class="hero-content" id="hero-content">
-      <div class="hero-title" style="color:var(--muted);font-size:1rem;font-weight:500">در حال بارگذاری...</div>
+      <div class="hero-tags"><span class="htag ht-type">در حال بارگذاری</span></div>
+      <div class="hero-title" style="color:var(--muted);font-weight:500;font-size:1rem">لطفاً صبر کنید...</div>
     </div>
   </div>
-  <div class="section" id="home-series-sec">
-    <div class="section-head">سریال‌ها</div>
-    <div class="grid" id="home-series-grid"><div class="status"><div class="status-icon">⏳</div></div></div>
-  </div>
-  <div class="section" id="home-movies-sec">
-    <div class="section-head">فیلم‌ها</div>
-    <div class="grid" id="home-movies-grid"><div class="status"><div class="status-icon">⏳</div></div></div>
-  </div>
+
+  <!-- SECTIONS injected by JS -->
+  <div id="home-sections"></div>
 </div>
 
-<div class="tab-page" id="page-movies">
-  <div class="page-hd">
-    <div class="page-title">فیلم‌ها</div>
-    <span class="count-badge" id="movies-count">۰</span>
+<!-- MOVIES -->
+<div class="page" id="pg-movies">
+  <div class="pg-head">
+    <div class="pg-title">فیلم‌ها</div>
+    <div class="pg-sub" id="movies-sub">در حال بارگذاری...</div>
   </div>
   <div class="grid" id="movies-grid"></div>
 </div>
 
-<div class="tab-page" id="page-series">
-  <div class="page-hd">
-    <div class="page-title">سریال‌ها</div>
-    <span class="count-badge" id="series-count">۰</span>
+<!-- SERIES -->
+<div class="page" id="pg-series">
+  <div class="pg-head">
+    <div class="pg-title">سریال‌ها</div>
+    <div class="pg-sub" id="series-sub">در حال بارگذاری...</div>
   </div>
   <div class="grid" id="series-grid"></div>
 </div>
 
 <!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+<nav class="bnav">
+  <button class="nbtn on" data-pg="home" onclick="go('home')">
     <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
     خانه
   </button>
-  <button class="nav-btn" data-tab="movies" onclick="switchTab('movies')">
+  <button class="nbtn" data-pg="movies" onclick="go('movies')">
     <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
     فیلم
   </button>
-  <button class="nav-btn" data-tab="series" onclick="switchTab('series')">
+  <button class="nbtn" data-pg="series" onclick="go('series')">
     <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
     سریال
   </button>
 </nav>
 
-<!-- MODAL -->
-<div class="overlay" id="overlay" onclick="handleBg(event)">
+<!-- SEARCH -->
+<div class="sovl" id="sovl">
+  <div class="sbar">
+    <input class="sinput" id="sinput" type="search" placeholder="جستجوی فیلم یا سریال..." oninput="doSearch(this.value)" autocomplete="off"/>
+    <button class="sclose" onclick="closeSearch()">✕</button>
+  </div>
+  <div id="s-results"></div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div class="ovl" id="ovl" onclick="bgClose(event)">
   <div class="modal" id="modal">
-    <div class="drag-handle"></div>
-    <div class="modal-top">
-      <span class="modal-name" id="modal-name"></span>
-      <button class="modal-close" onclick="closePlayer()">
+    <div class="drag"></div>
+    <div class="mtop">
+      <span class="mname" id="mname"></span>
+      <button class="mclose" onclick="closePlayer()">
         <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="player">
-      <iframe id="iframe" allowfullscreen allow="autoplay; fullscreen; picture-in-picture"></iframe>
-    </div>
-    <div class="modal-info" id="modal-info"></div>
+    <div class="player"><iframe id="iframe" allowfullscreen allow="autoplay;fullscreen;picture-in-picture"></iframe></div>
+    <div class="mdetail" id="mdetail"></div>
+    <button class="open-site" id="open-site-btn" onclick="openSite()">🔗 مشاهده در سایت اصلی</button>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-//  منبع داده — لینک دایرکتوری سرور
-// ══════════════════════════════════════════════════════════════
-const BASE_URL = 'https://dls2.iran-onemovies-dcenter.com/DonyayeSerial/';
+// ════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════
+const SITE = 'https://serialblog1.top';
 
-// ── نگاشت نام فایل → اطلاعات فارسی
-// فایل‌هایی که نام فارسی و ژانر آن‌ها مشخص است:
-const META = {
-  '10_thous':     { title:'۱۰ هزار سال', en:'10 Thousand Years', type:'series', genre:['اکشن','ماجرایی'], year:2024, rating:8.2 },
-};
+const CATS = [
+  { id:'latest-movie', label:'جدیدترین فیلم‌ها', icon:'🎬', color:'#e50914',
+    badge:'b-red', urls:['/category/film/','/category/movie/','/category/films/'] },
 
-// ── تخمین نوع از نام فایل
-function guessType(name) {
-  const s = name.toLowerCase();
-  if (/s\d+|season|ep|episode|قسمت|فصل/.test(s)) return 'series';
-  const seriesWords = ['thous','serial','series'];
-  if (seriesWords.some(w => s.includes(w))) return 'series';
-  return 'movie';
+  { id:'latest-series', label:'جدیدترین سریال‌ها', icon:'📺', color:'#3b82f6',
+    badge:'b-blue', urls:['/category/serial/','/category/series/','/category/tv-series/'] },
+
+  { id:'animation', label:'انیمیشن', icon:'🎭', color:'#8b5cf6',
+    badge:'b-purple', urls:['/category/animation/','/category/animated/','/category/cartoon/','/category/انیمیشن/'] },
+
+  { id:'anime', label:'انیمه', icon:'⛩️', color:'#ec4899',
+    badge:'b-pink', urls:['/category/anime/','/category/انیمه/'] },
+
+  { id:'korean', label:'سریال کره‌ای', icon:'🇰🇷', color:'#22c55e',
+    badge:'b-green', urls:['/category/serial-koreaei/','/category/korean/','/category/koreans/','/category/کره-ای/'] },
+
+  { id:'turkish', label:'سریال ترکی', icon:'🇹🇷', color:'#f97316',
+    badge:'b-orange', urls:['/category/serial-torki/','/category/turkish/','/category/turkey/','/category/ترکی/'] },
+];
+
+// CORS proxies — tried in order
+const PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+// ════════════════════════════════════════════════════════
+//  DATA STORE
+// ════════════════════════════════════════════════════════
+let STORE = {};    // catId → [{id,title,cover,link,catId,badge}]
+let ALL   = [];    // flat list
+let _uid  = 0;
+let _featured = null;
+let _activeItem = null;
+
+// ════════════════════════════════════════════════════════
+//  FETCH WITH FALLBACKS
+// ════════════════════════════════════════════════════════
+async function fetchHTML(path) {
+  const urls = Array.isArray(path) ? path : [path];
+
+  for (const p of urls) {
+    const full = SITE + p;
+    // 1. Direct
+    try {
+      const r = await fetch(full, { signal: AbortSignal.timeout(6000) });
+      if (r.ok) return { html: await r.text(), url: full };
+    } catch {}
+
+    // 2. CORS proxies
+    for (const proxy of PROXIES) {
+      try {
+        const r = await fetch(proxy(full), { signal: AbortSignal.timeout(8000) });
+        if (r.ok) {
+          const text = await r.text();
+          if (text.length > 200 && !text.includes('"error"')) return { html: text, url: full };
+        }
+      } catch {}
+    }
+  }
+  return null;
 }
 
-// ── زیبا کردن نام فایل
-function prettify(slug) {
-  return slug
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase())
-    .trim();
-}
+// ════════════════════════════════════════════════════════
+//  PARSE HTML → items
+// ════════════════════════════════════════════════════════
+function parseItems(html, catId, badge) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const items = [];
 
-// ── تبدیل عدد به فارسی
-function toPersian(n) {
-  return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
-}
+  // Try multiple WordPress/theme selectors
+  const articleSels = [
+    'article.post','article','.post-item','.movie-item','.entry',
+    '.item','.film-item','.media-item','.archive-item'
+  ];
 
-// ═══════════════════════════════════════
-//  بارگذاری لیست فایل‌ها از سرور
-// ═══════════════════════════════════════
-let ALL = [];
-
-async function loadContent() {
-  showLoading(true);
-  try {
-    // تلاش برای بارگذاری لیست دایرکتوری
-    const res = await fetch(BASE_URL, {
-      headers: {
-        'Accept': 'text/html',
-        'Referer': BASE_URL,
-      }
-    });
-
-    if (!res.ok) throw new Error('status ' + res.status);
-
-    const html = await res.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    // استخراج لینک‌های .html
-    const links = [...doc.querySelectorAll('a[href]')]
-      .map(a => a.getAttribute('href'))
-      .filter(h => h && h.endsWith('.html') && !h.startsWith('?') && !h.includes('..'));
-
-    if (links.length === 0) throw new Error('no links found');
-
-    ALL = links.map((href, i) => {
-      const slug = href.replace('.html','').split('/').pop();
-      const m = META[slug] || {};
-      return {
-        id: i + 1,
-        slug,
-        title: m.title || prettify(slug),
-        en: m.en || prettify(slug),
-        type: m.type || guessType(slug),
-        genre: m.genre || ['نامشخص'],
-        year: m.year || 2024,
-        rating: m.rating || null,
-        url: BASE_URL + href,
-        poster: null,
-        icon: '🎬',
-        featured: i === 0,
-      };
-    });
-
-  } catch (err) {
-    console.warn('Directory fetch failed:', err);
-    // Fallback: استفاده از داده‌های ثابت
-    ALL = [
-      {
-        id:1,slug:'10_thous',
-        title:'۱۰ هزار سال',en:'10 Thousand Years',
-        type:'series',genre:['اکشن','ماجرایی','تاریخی'],
-        year:2024,rating:8.2,
-        url: BASE_URL + '10_thous.html',
-        poster:null,icon:'🏺',featured:true
-      }
-    ];
+  let articles = [];
+  for (const sel of articleSels) {
+    articles = [...doc.querySelectorAll(sel)];
+    if (articles.length >= 2) break;
   }
 
-  showLoading(false);
-  renderAll();
+  // If no articles, try list items
+  if (articles.length < 2) {
+    articles = [...doc.querySelectorAll('li')].filter(li =>
+      li.querySelector('img') && li.querySelector('a')
+    );
+  }
+
+  for (const el of articles) {
+    // Title
+    const titleEl = el.querySelector([
+      'h2 a','h3 a','h4 a','.entry-title a','.post-title a',
+      '.title a','a[rel="bookmark"]','.film-title a','.name a'
+    ].join(','));
+    const title = titleEl?.textContent?.trim() || '';
+    if (!title || title.length < 2) continue;
+
+    // Link
+    const link = titleEl?.href || el.querySelector('a')?.href || '';
+    if (!link || link === window.location.href) continue;
+
+    // Cover image
+    const imgEl = el.querySelector([
+      'img.wp-post-image','img.attachment-post-thumbnail',
+      '.thumbnail img','.thumb img','.cover img',
+      '.post-thumbnail img','.entry-thumbnail img',
+      'figure img','img[loading]','img'
+    ].join(','));
+
+    let cover = imgEl?.src || imgEl?.dataset?.src || imgEl?.dataset?.lazy ||
+                imgEl?.getAttribute('data-original') || imgEl?.getAttribute('data-srcset')?.split(' ')[0] || '';
+
+    // Fix relative URLs
+    if (cover && cover.startsWith('/')) cover = SITE + cover;
+    if (cover && !cover.startsWith('http')) cover = '';
+
+    // Quality filter — skip tiny icons
+    if (cover && (cover.includes('avatar') || cover.includes('emoji') || cover.includes('logo'))) cover = '';
+
+    items.push({ id: ++_uid, title, cover, link, catId, badge });
+  }
+
+  return items;
 }
 
-function showLoading(on) {
-  const b = document.getElementById('loading-bar');
-  if (b) b.style.display = on ? 'block' : 'none';
+// ════════════════════════════════════════════════════════
+//  LOAD CATEGORY
+// ════════════════════════════════════════════════════════
+async function loadCat(cat) {
+  const res = await fetchHTML(cat.urls);
+  if (!res) return [];
+  const items = parseItems(res.html, cat.id, cat.badge);
+  return items.slice(0, 20);
 }
 
-// ═══════════════════════════════════════
-//  رندر
-// ═══════════════════════════════════════
+// ════════════════════════════════════════════════════════
+//  CARD HTML
+// ════════════════════════════════════════════════════════
 function cardHTML(m) {
-  const badge = m.type === 'series'
-    ? '<span class="card-badge b-blue">سریال</span>'
-    : '<span class="card-badge b-red">فیلم</span>';
-  const img = m.poster
-    ? `<img src="${m.poster}" loading="lazy" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+  const img = m.cover
+    ? `<img src="${m.cover}" loading="lazy" alt="" decoding="async"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
     : '';
-  return `<div class="card" onclick="openPlayer(${m.id})">
+  const ph = `<div class="card-ph" style="${m.cover?'display:none':''}">${catIcon(m.catId)}<span>${m.title}</span></div>`;
+  return `<div class="card" onclick="openItem(${m.id})">
     <div class="card-poster">
-      ${img}<div class="card-ph" style="${m.poster?'display:none':''}">${m.icon}<span>${m.title}</span></div>
-      ${badge}
-      <div class="card-overlay"><div class="play-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+      ${img}${ph}
+      <span class="card-badge ${m.badge}">${catLabel(m.catId)}</span>
+      <div class="card-ov"><div class="pcircle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
     </div>
     <div class="card-info">
       <div class="card-title">${m.title}</div>
-      <div class="card-meta">
-        <span>${m.year}</span>
-        ${m.rating ? `<span class="card-rating">★${m.rating}</span>` : ''}
-      </div>
     </div>
   </div>`;
 }
 
-function renderAll() {
-  const series = ALL.filter(m => m.type === 'series');
-  const movies = ALL.filter(m => m.type === 'movie');
-
-  // HOME HERO
-  const f = ALL.find(m => m.featured) || ALL[0];
-  if (f) {
-    document.getElementById('hero-content').innerHTML = `
-      <div class="hero-row">
-        <span class="star">★${f.rating || '—'}</span>
-        <span class="dot"></span><span>${f.year}</span>
-        <span class="dot"></span><span>${f.genre.slice(0,2).join(' · ')}</span>
-      </div>
-      <div class="hero-title">${f.title}</div>
-      <div class="hero-sub">${f.en}</div>
-      <button class="btn-play" onclick="openPlayer(${f.id})">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>پخش آنلاین
-      </button>`;
-  }
-
-  // HOME GRIDS
-  const hsg = document.getElementById('home-series-grid');
-  const hmg = document.getElementById('home-movies-grid');
-  if (series.length) hsg.innerHTML = series.map(cardHTML).join('');
-  else document.getElementById('home-series-sec').style.display = 'none';
-  if (movies.length) hmg.innerHTML = movies.map(cardHTML).join('');
-  else document.getElementById('home-movies-sec').style.display = 'none';
-
-  // MOVIES PAGE
-  document.getElementById('movies-count').textContent = toPersian(movies.length);
-  document.getElementById('movies-grid').innerHTML = movies.length
-    ? movies.map(cardHTML).join('')
-    : `<div class="status"><div class="status-icon">🎬</div><p>فیلمی یافت نشد</p></div>`;
-
-  // SERIES PAGE
-  document.getElementById('series-count').textContent = toPersian(series.length);
-  document.getElementById('series-grid').innerHTML = series.length
-    ? series.map(cardHTML).join('')
-    : `<div class="status"><div class="status-icon">📺</div><p>سریالی یافت نشد</p></div>`;
+function catIcon(id) {
+  return CATS.find(c => c.id === id)?.icon || '🎬';
+}
+function catLabel(id) {
+  const map = {
+    'latest-movie':'فیلم','latest-series':'سریال',
+    'animation':'انیمیشن','anime':'انیمه',
+    'korean':'کره‌ای','turkish':'ترکی'
+  };
+  return map[id] || '';
 }
 
-// ═══════════════════════════════════════
-//  TABS
-// ═══════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-  document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+// ════════════════════════════════════════════════════════
+//  RENDER HOME SECTIONS
+// ════════════════════════════════════════════════════════
+function renderHomeSection(cat, items) {
+  if (!items.length) return;
+
+  const div = document.createElement('div');
+  div.className = 'sec';
+  div.id = 'sec-' + cat.id;
+  div.innerHTML = `
+    <div class="sec-head">
+      <div class="sec-title">
+        <span class="sec-bar" style="background:${cat.color}"></span>
+        <span class="sec-icon">${cat.icon}</span>
+        ${cat.label}
+      </div>
+      <span class="see-all" onclick="showAll('${cat.id}')">بیشتر ›</span>
+    </div>
+    <div class="hscroll" id="hs-${cat.id}">
+      ${items.map(cardHTML).join('')}
+    </div>`;
+  document.getElementById('home-sections').appendChild(div);
+}
+
+function showAll(catId) {
+  const cat = CATS.find(c => c.id === catId);
+  if (!cat) return;
+
+  if (catId === 'latest-movie') { go('movies'); return; }
+  if (catId === 'latest-series') { go('series'); return; }
+
+  // Show full-page category view
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('on'));
+
+  let pg = document.getElementById('pg-cat-' + catId);
+  if (!pg) {
+    pg = document.createElement('div');
+    pg.className = 'page';
+    pg.id = 'pg-cat-' + catId;
+    const items = STORE[catId] || [];
+    pg.innerHTML = `
+      <div class="pg-head" style="display:flex;align-items:center;gap:10px">
+        <button onclick="go('home')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">‹</button>
+        <div>
+          <div class="pg-title">${cat.icon} ${cat.label}</div>
+          <div class="pg-sub">${items.length} مورد</div>
+        </div>
+      </div>
+      <div class="grid">${items.map(cardHTML).join('')}</div>`;
+    document.body.insertBefore(pg, document.querySelector('.bnav'));
+  }
+  pg.classList.add('on');
   window.scrollTo(0,0);
 }
 
-// ═══════════════════════════════════════
+// ════════════════════════════════════════════════════════
+//  HERO
+// ════════════════════════════════════════════════════════
+function renderHero(m) {
+  _featured = m;
+  if (!m) return;
+  const cover = document.getElementById('hero-cover');
+  if (m.cover) { cover.src = m.cover; cover.style.display = ''; }
+  const catObj = CATS.find(c => c.id === m.catId);
+  document.getElementById('hero-content').innerHTML = `
+    <div class="hero-tags">
+      <span class="htag ht-type" style="background:${catObj?.color||'var(--accent)'}">${catIcon(m.catId)} ${catLabel(m.catId)}</span>
+    </div>
+    <div class="hero-title">${m.title}</div>
+    <div class="hero-btns">
+      <button class="hbtn hbtn-play" onclick="openItem(${m.id})">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>پخش آنلاین
+      </button>
+      <button class="hbtn hbtn-info" onclick="window.open('${m.link}','_blank')">اطلاعات بیشتر</button>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════
 //  PLAYER
-// ═══════════════════════════════════════
-function openPlayer(id) {
+// ════════════════════════════════════════════════════════
+function openItem(id) {
   const m = ALL.find(x => x.id === id);
   if (!m) return;
-  document.getElementById('modal-name').textContent = m.title;
-  document.getElementById('iframe').src = m.url;
-  const typeTag = m.type === 'series' ? '<span class="tag t-blue">سریال</span>' : '<span class="tag t-red">فیلم</span>';
-  const ph = m.poster
-    ? `<img src="${m.poster}" alt="" style="width:100%;height:100%;object-fit:cover">`
-    : `<div class="card-ph" style="height:100%">${m.icon}</div>`;
-  document.getElementById('modal-info').innerHTML = `
+  _activeItem = m;
+
+  document.getElementById('mname').textContent = m.title;
+  document.getElementById('iframe').src = m.link;
+  document.getElementById('open-site-btn').style.display = '';
+
+  const ph = m.cover
+    ? `<img src="${m.cover}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : `<div class="card-ph" style="height:100%;font-size:22px">${catIcon(m.catId)}</div>`;
+  const catObj = CATS.find(c => c.id === m.catId);
+  document.getElementById('mdetail').innerHTML = `
     <div class="mposter">${ph}</div>
-    <div class="mtext">
+    <div class="minfo">
       <h3>${m.title}</h3>
-      <div class="orig">${m.en}</div>
-      <div class="tags">
-        ${typeTag}
-        ${m.rating ? `<span class="tag t-gold">★ ${m.rating}</span>` : ''}
-        <span class="tag t-muted">${m.year}</span>
-        ${m.genre.map(g=>`<span class="tag t-muted">${g}</span>`).join('')}
+      <div class="mtags">
+        <span class="tag" style="background:${catObj?.color||'var(--accent)'};color:#fff">${catIcon(m.catId)} ${catLabel(m.catId)}</span>
       </div>
+      <p class="mdesc-text">برای مشاهده جزئیات بیشتر روی «مشاهده در سایت اصلی» بزنید.</p>
     </div>`;
-  document.getElementById('overlay').classList.add('open');
+
+  document.getElementById('ovl').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 
+function openSite() {
+  if (_activeItem) window.open(_activeItem.link, '_blank');
+}
+
 function closePlayer() {
-  document.getElementById('overlay').classList.remove('open');
+  document.getElementById('ovl').classList.remove('on');
   document.getElementById('iframe').src = '';
   document.body.style.overflow = '';
 }
 
-function handleBg(e) { if (e.target === document.getElementById('overlay')) closePlayer(); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closePlayer(); });
+function bgClose(e) { if (e.target.id === 'ovl') closePlayer(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePlayer(); closeSearch(); } });
 
-// START
-loadContent();
+// ════════════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════════════
+function go(pg) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('on'));
+  document.getElementById('pg-' + pg).classList.add('on');
+  document.querySelector('[data-pg="' + pg + '"]')?.classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════════════════════════
+//  SEARCH
+// ════════════════════════════════════════════════════════
+function openSearch() {
+  document.getElementById('sovl').classList.add('on');
+  setTimeout(() => document.getElementById('sinput').focus(), 100);
+}
+function closeSearch() {
+  document.getElementById('sovl').classList.remove('on');
+  document.getElementById('sinput').value = '';
+  document.getElementById('s-results').innerHTML = '';
+}
+function doSearch(q) {
+  const term = q.trim().toLowerCase();
+  const el = document.getElementById('s-results');
+  if (!term) { el.innerHTML = ''; return; }
+  const res = ALL.filter(m => m.title.toLowerCase().includes(term));
+  el.innerHTML = res.length
+    ? res.map(cardHTML).join('')
+    : '<div class="status"><div class="sicon">🔍</div><p>نتیجه‌ای یافت نشد</p></div>';
+}
+
+// ════════════════════════════════════════════════════════
+//  LOADING INDICATOR
+// ════════════════════════════════════════════════════════
+let _loading = 0;
+function setLoading(on) {
+  _loading += on ? 1 : -1;
+  document.getElementById('topbar').style.display = _loading > 0 ? 'block' : 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  MOVIES / SERIES FULL PAGES
+// ════════════════════════════════════════════════════════
+function renderFullPages() {
+  const movies = ALL.filter(m => m.catId === 'latest-movie');
+  const series = ALL.filter(m => m.catId === 'latest-series');
+
+  const mg = document.getElementById('movies-grid');
+  const sg = document.getElementById('series-grid');
+
+  mg.innerHTML = movies.length
+    ? movies.map(cardHTML).join('')
+    : '<div class="status"><div class="sicon">🎬</div><p>در حال بارگذاری...</p></div>';
+  sg.innerHTML = series.length
+    ? series.map(cardHTML).join('')
+    : '<div class="status"><div class="sicon">📺</div><p>در حال بارگذاری...</p></div>';
+
+  document.getElementById('movies-sub').textContent = movies.length ? movies.length + ' فیلم' : 'در حال بارگذاری...';
+  document.getElementById('series-sub').textContent = series.length ? series.length + ' سریال' : 'در حال بارگذاری...';
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT — load all categories
+// ════════════════════════════════════════════════════════
+async function init() {
+  // Load categories in parallel with progress
+  const promises = CATS.map(async (cat) => {
+    setLoading(true);
+    try {
+      const items = await loadCat(cat);
+      STORE[cat.id] = items;
+      ALL = [...ALL, ...items];
+
+      if (items.length > 0) {
+        renderHomeSection(cat, items.slice(0, 12));
+
+        // Set hero to first movie/series found
+        if (!_featured && (cat.id === 'latest-movie' || cat.id === 'latest-series')) {
+          renderHero(items[0]);
+        }
+
+        // Update full pages live
+        renderFullPages();
+      }
+    } catch (e) {
+      console.warn('Cat load error:', cat.id, e);
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  await Promise.allSettled(promises);
+
+  // Final render
+  renderFullPages();
+
+  if (ALL.length === 0) {
+    document.getElementById('hero-content').innerHTML = `
+      <div class="hero-title" style="color:var(--muted);font-size:1rem;font-weight:500">
+        ارتباط با سایت برقرار نشد
+      </div>
+      <div class="hero-desc">سایت اصلی را مستقیم باز کنید</div>
+      <button class="hbtn hbtn-info" onclick="window.open('${SITE}','_blank')">باز کردن سایت</button>`;
+    document.getElementById('home-sections').innerHTML = `
+      <div class="status">
+        <div class="sicon">🌐</div>
+        <p>محتوا بارگذاری نشد.<br/>ممکن است سایت بلوک باشد یا CORS اجازه ندهد.<br/><br/>
+        <a href="${SITE}" target="_blank" style="color:var(--accent)">مستقیم به سایت بروید ›</a></p>
+      </div>`;
+  }
+}
+
+init();
 </script>
 </body>
 </html>
