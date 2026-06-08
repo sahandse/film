@@ -901,9 +901,125 @@ function updateFullPages() {
 }
 
 // ════════════════════════════════════════════════════════════════
+//  FETCH DETAIL PAGE
+// ════════════════════════════════════════════════════════════════
+const _detailCache = {};
+
+async function fetchDetail(url) {
+  if (_detailCache[url]) return _detailCache[url];
+
+  let html = null;
+  // Direct fetch first
+  try {
+    const r = await fetch(url, {signal: AbortSignal.timeout(6000)});
+    if (r.ok) html = await r.text();
+  } catch {}
+
+  // CORS proxies fallback
+  if (!html) {
+    for (const proxy of PROXIES) {
+      try {
+        const r = await fetch(proxy(url), {signal: AbortSignal.timeout(9000)});
+        if (r.ok) {
+          const t = await r.text();
+          if (t.length > 500) { html = t; break; }
+        }
+      } catch {}
+    }
+  }
+
+  if (!html) return null;
+
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  // ── Video player embed ──
+  // Look for iframe with known video player hosts
+  let playerSrc = '';
+  const iframes = [...doc.querySelectorAll('iframe')];
+  for (const f of iframes) {
+    const s = f.src || f.getAttribute('data-src') || '';
+    if (s && /player|embed|video|stream|aparat|xvideo|dailymotion|vimeo|streamtape|dood|filemoon|upstream|vidplay|ok\.ru|mp4upload/i.test(s)) {
+      playerSrc = s; break;
+    }
+  }
+  // Fallback: any iframe with a src that looks like a player
+  if (!playerSrc) {
+    for (const f of iframes) {
+      const s = f.src || f.getAttribute('data-src') || '';
+      if (s && s.startsWith('http') && !s.includes(SITE)) { playerSrc = s; break; }
+    }
+  }
+
+  // ── Direct video file ──
+  let videoSrc = '';
+  const videoEl = doc.querySelector('video source, video');
+  if (videoEl) {
+    videoSrc = videoEl.src || videoEl.getAttribute('data-src') || '';
+  }
+
+  // ── Download links ──
+  const dlLinks = [];
+  doc.querySelectorAll('a[href]').forEach(a => {
+    const h = a.href || '';
+    const txt = a.textContent.trim();
+    if (/\.(mp4|mkv|avi|mov|webm|ts|m3u8)(\?|$)/i.test(h)) {
+      dlLinks.push({ url: h, label: txt || 'دانلود' });
+    }
+  });
+  // Also look for download link containers
+  doc.querySelectorAll('.download-links a, .dl-link a, .links a, .download a, [class*="download"] a').forEach(a => {
+    const h = a.href || '';
+    const txt = a.textContent.trim();
+    if (h && h.startsWith('http') && !dlLinks.find(d => d.url === h)) {
+      dlLinks.push({ url: h, label: txt || 'دانلود' });
+    }
+  });
+
+  // ── Description ──
+  const descSels = ['.entry-content p','.synopsis','.description','.film-desc','.movie-desc',
+    '.post-content p','.content-area p','[class*="synopsis"] p','[class*="desc"] p',
+    '.single-content p', 'article p'];
+  let desc = '';
+  for (const s of descSels) {
+    const el = doc.querySelector(s);
+    const txt = el?.textContent?.trim() || '';
+    if (txt.length > 30) { desc = txt.slice(0, 400); break; }
+  }
+
+  // ── Tags / genres ──
+  const tags = [];
+  doc.querySelectorAll('.tags a,.post-tags a,.genres a,.genre a,.tag a,[rel="tag"]').forEach(a => {
+    const t = a.textContent.trim();
+    if (t && t.length < 30 && !tags.includes(t)) tags.push(t);
+  });
+
+  // ── Year & quality ──
+  const bodyText = doc.body?.textContent || '';
+  const yearMatch = bodyText.match(/\b(13\d{2}|20[12]\d)\b/);
+  const year = yearMatch ? yearMatch[0] : '';
+  const quality = /4K|2160p/i.test(bodyText) ? '4K' :
+                  /1080p|FHD/i.test(bodyText) ? '1080p' :
+                  /720p|HD/i.test(bodyText) ? '720p' : 'HD';
+
+  // ── Cover image (higher res from detail page) ──
+  let cover = '';
+  const imgSels = ['.post-thumbnail img','.entry-thumbnail img','.movie-poster img',
+    '.film-poster img','article img','figure img','.wp-post-image'];
+  for (const s of imgSels) {
+    const img = doc.querySelector(s);
+    const src = img?.src || img?.dataset?.src || '';
+    if (src && src.startsWith('http') && !/avatar|logo|icon/i.test(src)) { cover = src; break; }
+  }
+
+  const detail = { playerSrc, videoSrc, dlLinks, desc, tags, year, quality, cover };
+  _detailCache[url] = detail;
+  return detail;
+}
+
+// ════════════════════════════════════════════════════════════════
 //  MODAL / PLAYER
 // ════════════════════════════════════════════════════════════════
-function openItem(id) {
+async function openItem(id) {
   const m = ALL.find(x => x.id === id);
   if (!m) return;
   _activeItem = m;
@@ -911,48 +1027,107 @@ function openItem(id) {
 
   const c = cat(m.catId);
 
-  // Modal hero
+  // Reset modal state
   const coverEl = document.getElementById('modal-cover');
   const playerEl = document.getElementById('modal-player');
   const iframeEl = document.getElementById('iframe');
-
   iframeEl.src = '';
   playerEl.style.display = 'none';
   if (m.cover) { coverEl.src = m.cover; coverEl.style.display = 'block'; }
   else coverEl.style.display = 'none';
 
-  // Play button state
   const mplay = document.getElementById('mplay-btn');
   mplay.classList.remove('playing');
   mplay.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
 
+  // Show modal immediately with basic info
   document.getElementById('modal-title').textContent = m.title;
   document.getElementById('modal-meta').innerHTML = `
-    <span class="m-match">۹۷٪ تطابق</span>
-    <span class="m-year">جدید</span>
+    <span class="m-match">جدید</span>
     <span class="m-hd">HD</span>
     <span style="font-size:12px;color:var(--sub);border:1px solid var(--sub);padding:1px 6px;border-radius:3px">${c?.badge||''}</span>`;
   document.getElementById('modal-btns').innerHTML = `
-    <button class="mbtn mbtn-play" onclick="togglePlay()">
+    <button class="mbtn mbtn-play" onclick="togglePlay()" id="mbtn-play">
       <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>پخش
     </button>
     <button class="mbtn mbtn-site" onclick="window.open('${m.link}','_blank')">
       <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-      مشاهده در سایت
+      سایت اصلی
     </button>`;
-  document.getElementById('modal-desc').textContent = m.desc || 'برای مشاهده اطلاعات بیشتر روی «مشاهده در سایت» بزنید.';
+  document.getElementById('modal-desc').innerHTML =
+    `<span style="color:var(--muted);font-size:12px">در حال دریافت اطلاعات...</span>`;
   document.getElementById('modal-tags').innerHTML =
-    `<span class="mtag">${c?.icon} ${c?.label}</span>
-     <span class="mtag">جدید</span>
-     <span class="mtag">HD</span>`;
-
+    `<span class="mtag">${c?.icon} ${c?.label}</span>`;
   document.getElementById('movl').classList.add('on');
   document.body.style.overflow = 'hidden';
+
+  // Fetch detail in background
+  const detail = await fetchDetail(m.link);
+  if (!detail) {
+    document.getElementById('modal-desc').textContent = m.desc || 'اطلاعات دریافت نشد.';
+    return;
+  }
+
+  // Update cover if better one found
+  if (detail.cover && !m.cover) {
+    coverEl.src = detail.cover;
+    coverEl.style.display = 'block';
+    m.cover = detail.cover;
+  }
+
+  // Store player URL on the item
+  m._playerSrc = detail.playerSrc || detail.videoSrc || m.link;
+  m._dlLinks   = detail.dlLinks;
+  m._isVideo   = !!detail.videoSrc;
+
+  // Update meta
+  const metaParts = ['<span class="m-match">جدید</span>'];
+  if (detail.year) metaParts.push(`<span class="m-year">${detail.year}</span>`);
+  metaParts.push(`<span class="m-hd">${detail.quality}</span>`);
+  metaParts.push(`<span style="font-size:12px;color:var(--sub);border:1px solid var(--sub);padding:1px 6px;border-radius:3px">${c?.badge||''}</span>`);
+  document.getElementById('modal-meta').innerHTML = metaParts.join('');
+
+  // Update description
+  document.getElementById('modal-desc').textContent = detail.desc || m.desc || 'توضیحی یافت نشد.';
+
+  // Tags
+  const allTags = [c?.label, ...detail.tags].filter(Boolean).slice(0, 8);
+  document.getElementById('modal-tags').innerHTML = allTags.map(t => `<span class="mtag">${t}</span>`).join('');
+
+  // Download buttons
+  if (detail.dlLinks.length) {
+    const dlHTML = detail.dlLinks.slice(0, 3).map(d =>
+      `<a href="${d.url}" target="_blank" class="mbtn mbtn-site" style="text-decoration:none;font-size:11px">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        ${d.label.slice(0,20)}
+      </a>`
+    ).join('');
+    document.getElementById('modal-btns').innerHTML = `
+      <button class="mbtn mbtn-play" onclick="togglePlay()" id="mbtn-play">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>پخش آنلاین
+      </button>
+      ${dlHTML}
+      <button class="mbtn mbtn-site" onclick="window.open('${m.link}','_blank')">
+        <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        سایت اصلی
+      </button>`;
+  }
 }
 
 function playNow(id) {
   openItem(id);
-  setTimeout(togglePlay, 300);
+  // Slight delay so modal opens and detail starts loading
+  setTimeout(async () => {
+    const m = ALL.find(x => x.id === id);
+    if (!m) return;
+    // Wait up to 5s for playerSrc to be available
+    let waited = 0;
+    while (!m._playerSrc && waited < 5000) {
+      await new Promise(r => setTimeout(r, 200));
+      waited += 200;
+    }
+    togglePlay();
+  }, 400);
 }
 
 function togglePlay() {
@@ -965,7 +1140,16 @@ function togglePlay() {
   const mplay   = document.getElementById('mplay-btn');
 
   if (_isPlaying) {
-    iframeEl.src = _activeItem.link;
+    const src = _activeItem._playerSrc || _activeItem.link;
+    if (_activeItem._isVideo) {
+      // Use <video> tag for direct video files
+      playerEl.innerHTML = `<video controls autoplay style="width:100%;height:100%;background:#000"
+        src="${src}">مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.</video>`;
+    } else {
+      iframeEl.src = src;
+      playerEl.innerHTML = '';
+      playerEl.appendChild(iframeEl);
+    }
     coverEl.style.display = 'none';
     playerEl.style.display = 'block';
     mplay.classList.add('playing');
@@ -973,7 +1157,7 @@ function togglePlay() {
   } else {
     iframeEl.src = '';
     playerEl.style.display = 'none';
-    coverEl.style.display = 'block';
+    if (_activeItem.cover) { coverEl.style.display = 'block'; }
     mplay.classList.remove('playing');
     mplay.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
   }
