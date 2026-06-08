@@ -1,601 +1,739 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PAW | فیلم و سریال</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #080b14;
-      --surface: #0f1623;
-      --card: #131929;
-      --card-hover: #1a2236;
-      --accent: #e50914;
-      --accent-hover: #c1070f;
-      --gold: #f5c518;
-      --blue: #3b82f6;
-      --text: #e8eaf0;
-      --muted: #7a8299;
-      --border: rgba(255,255,255,0.07);
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Vazirmatn', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: var(--surface); }
-    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
-
-    /* ──── HEADER ──── */
-    header {
-      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
-      padding: 0 24px;
-      height: 64px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: linear-gradient(to bottom, rgba(8,11,20,.95) 0%, rgba(8,11,20,0) 100%);
-      backdrop-filter: blur(8px);
-    }
-
-    .logo {
-      font-size: 26px; font-weight: 900; letter-spacing: 4px;
-      color: var(--accent); text-decoration: none;
-      text-shadow: 0 0 30px rgba(229,9,20,.4);
-    }
-
-    .logo span { color: var(--text); font-size: 12px; font-weight: 400; letter-spacing: 1px; opacity: .6; margin-right: 6px; }
-
-    nav { display: flex; gap: 24px; }
-    nav a {
-      color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
-      transition: color .2s;
-    }
-    nav a:hover, nav a.active { color: var(--text); }
-
-    /* ──── HERO ──── */
-    .hero {
-      position: relative; height: 85vh; min-height: 520px;
-      display: flex; align-items: flex-end;
-      padding: 0 32px 60px;
-      overflow: hidden;
-    }
-
-    .hero-bg {
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, #0d1f3c 0%, #1a0a1e 50%, #0d0305 100%);
-    }
-
-    .hero-bg::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 30% 50%, rgba(229,9,20,.15) 0%, transparent 60%),
-                  radial-gradient(ellipse at 70% 30%, rgba(59,130,246,.1) 0%, transparent 50%);
-    }
-
-    .hero-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, var(--bg) 0%, rgba(8,11,20,.5) 40%, rgba(8,11,20,.1) 100%);
-    }
-
-    .hero-content { position: relative; max-width: 560px; }
-
-    .hero-badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-
-    .badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 12px; border-radius: 6px;
-      font-size: 12px; font-weight: 600;
-    }
-    .badge-red { background: var(--accent); color: #fff; }
-    .badge-gold { background: rgba(245,197,24,.15); color: var(--gold); border: 1px solid rgba(245,197,24,.3); }
-    .badge-blue { background: rgba(59,130,246,.15); color: #93c5fd; border: 1px solid rgba(59,130,246,.3); }
-    .badge-muted { background: rgba(255,255,255,.08); color: var(--muted); }
-
-    .hero h1 {
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      font-weight: 900; line-height: 1.1;
-      color: #fff; margin-bottom: 8px;
-      text-shadow: 0 2px 20px rgba(0,0,0,.5);
-    }
-
-    .hero-orig { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
-
-    .hero-meta {
-      display: flex; gap: 16px; align-items: center;
-      font-size: 13px; color: var(--muted); margin-bottom: 16px;
-    }
-
-    .hero-meta .rating { color: var(--gold); font-weight: 700; font-size: 15px; }
-    .hero-meta .dot { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
-
-    .hero-desc {
-      font-size: 14px; color: var(--muted); line-height: 1.7;
-      margin-bottom: 28px; max-width: 480px;
-    }
-
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
-
-    .btn-play {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent); color: #fff;
-      border: none; padding: 12px 28px; border-radius: 10px;
-      font-family: 'Vazirmatn', sans-serif; font-size: 15px; font-weight: 700;
-      cursor: pointer; transition: all .2s;
-      box-shadow: 0 4px 20px rgba(229,9,20,.4);
-    }
-    .btn-play:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(229,9,20,.5); }
-
-    .btn-info {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,.1); color: var(--text);
-      border: 1px solid var(--border); padding: 12px 24px; border-radius: 10px;
-      font-family: 'Vazirmatn', sans-serif; font-size: 14px; font-weight: 600;
-      cursor: pointer; transition: all .2s; backdrop-filter: blur(4px);
-    }
-    .btn-info:hover { background: rgba(255,255,255,.18); }
-
-    /* ──── MAIN ──── */
-    main { max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
-
-    .section { margin-bottom: 48px; }
-
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 20px;
-    }
-
-    .section-title {
-      font-size: 18px; font-weight: 700; color: #fff;
-      display: flex; align-items: center; gap: 10px;
-    }
-
-    .section-title::before {
-      content: '';
-      display: block; width: 4px; height: 20px;
-      background: var(--accent); border-radius: 2px;
-    }
-
-    .see-all {
-      font-size: 13px; color: var(--muted); text-decoration: none;
-      transition: color .2s;
-    }
-    .see-all:hover { color: var(--accent); }
-
-    /* ──── GRID ──── */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 16px;
-    }
-
-    @media (min-width: 640px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-    }
-
-    /* ──── CARD ──── */
-    .card {
-      background: var(--card);
-      border-radius: 12px; overflow: hidden;
-      cursor: pointer; transition: all .3s;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .card:hover {
-      transform: translateY(-6px) scale(1.02);
-      box-shadow: 0 16px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(229,9,20,.3);
-      background: var(--card-hover);
-    }
-
-    .card-poster {
-      position: relative; aspect-ratio: 2/3; overflow: hidden;
-      background: linear-gradient(135deg, #1a2236, #0f1623);
-    }
-
-    .card-poster img {
-      width: 100%; height: 100%; object-fit: cover;
-      transition: transform .5s;
-    }
-
-    .card:hover .card-poster img { transform: scale(1.08); }
-
-    .card-poster-placeholder {
-      width: 100%; height: 100%;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 8px;
-      color: var(--muted); font-size: 36px;
-    }
-
-    .card-poster-placeholder span {
-      font-size: 11px; font-weight: 600; color: var(--muted);
-      text-align: center; padding: 0 8px;
-    }
-
-    .card-type-badge {
-      position: absolute; top: 8px; right: 8px;
-      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px;
-    }
-
-    .card-play-overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,.5);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity .3s;
-    }
-
-    .card:hover .card-play-overlay { opacity: 1; }
-
-    .play-btn-circle {
-      width: 52px; height: 52px;
-      background: var(--accent); border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(229,9,20,.6);
-      transition: transform .2s;
-    }
-
-    .card:hover .play-btn-circle { transform: scale(1.1); }
-
-    .play-btn-circle svg { margin-right: -3px; }
-
-    .card-info { padding: 12px; }
-    .card-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-    .card-meta {
-      display: flex; align-items: center; justify-content: space-between;
-      font-size: 11px; color: var(--muted);
-    }
-
-    .card-rating { color: var(--gold); font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 2px; }
-
-    .card-genres { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
-    .card-genre { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,.06); color: var(--muted); }
-
-    /* ──── MODAL ──── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 1000;
-      background: rgba(0,0,0,.92); backdrop-filter: blur(12px);
-      display: flex; align-items: center; justify-content: center;
-      padding: 16px;
-      opacity: 0; pointer-events: none; transition: opacity .3s;
-    }
-
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-    .modal {
-      background: var(--surface);
-      border-radius: 16px; overflow: hidden;
-      width: 100%; max-width: 960px;
-      border: 1px solid var(--border);
-      box-shadow: 0 32px 80px rgba(0,0,0,.8);
-      transform: scale(.95); transition: transform .3s;
-      max-height: 90vh; overflow-y: auto;
-    }
-
-    .modal-overlay.open .modal { transform: scale(1); }
-
-    .modal-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .modal-title { font-size: 16px; font-weight: 700; color: #fff; }
-
-    .modal-close {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgba(255,255,255,.08);
-      border: none; cursor: pointer; color: var(--muted);
-      display: flex; align-items: center; justify-content: center;
-      transition: all .2s;
-    }
-    .modal-close:hover { background: var(--accent); color: #fff; }
-
-    .player-wrap {
-      position: relative; width: 100%; aspect-ratio: 16/9;
-      background: #000;
-    }
-
-    .player-wrap iframe {
-      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
-    }
-
-    .modal-details { padding: 20px; display: grid; grid-template-columns: 1fr auto; gap: 20px; }
-
-    .modal-info-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
-    .modal-info-orig { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
-
-    .modal-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-
-    .modal-desc { font-size: 13px; color: var(--muted); line-height: 1.75; }
-
-    .modal-poster {
-      width: 100px; height: 150px; border-radius: 10px;
-      object-fit: cover; flex-shrink: 0;
-    }
-
-    .modal-poster-placeholder {
-      width: 100px; height: 150px; border-radius: 10px;
-      background: var(--card);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; flex-shrink: 0;
-    }
-
-    /* ──── EMPTY ──── */
-    .empty {
-      text-align: center; padding: 80px 24px; color: var(--muted);
-    }
-    .empty-icon { font-size: 56px; margin-bottom: 16px; }
-
-    /* ──── FOOTER ──── */
-    footer {
-      text-align: center; padding: 24px;
-      border-top: 1px solid var(--border);
-      color: var(--muted); font-size: 12px;
-      margin-top: 16px;
-    }
-
-    @media (max-width: 600px) {
-      .hero { padding: 0 16px 40px; }
-      .hero h1 { font-size: 1.8rem; }
-      nav { display: none; }
-      .modal-details { grid-template-columns: 1fr; }
-      .modal-poster, .modal-poster-placeholder { display: none; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#06080f"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>PAW | فیلم و سریال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#06080f;--surface:#0d1120;--card:#111827;--card-h:#192035;
+  --accent:#e50914;--gold:#f5c518;--blue:#3b82f6;--purple:#8b5cf6;
+  --green:#22c55e;--pink:#ec4899;--orange:#f97316;
+  --text:#e8eaf0;--muted:#64748b;--border:rgba(255,255,255,.06);
+  --nav:62px;--safe:env(safe-area-inset-bottom,0px);
+  --header:56px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Vazirmatn',sans-serif;
+  padding-bottom:calc(var(--nav)+var(--safe));overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(229,9,20,.5);border-radius:2px}
+
+/* ─── HEADER ─── */
+header{
+  position:sticky;top:0;z-index:100;height:var(--header);
+  padding:0 16px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(6,8,15,.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-text{font-size:20px;font-weight:900;letter-spacing:3px;color:var(--accent);
+  text-shadow:0 0 20px rgba(229,9,20,.6)}
+.logo-sub{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:.3px}
+.search-btn{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.07);
+  border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);transition:all .2s}
+.search-btn:hover{background:rgba(255,255,255,.12);color:var(--text)}
+.search-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* ─── LOADING BAR ─── */
+#topbar{position:fixed;top:0;left:0;right:0;height:2px;z-index:999;display:none;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--gold),var(--accent),transparent);
+  background-size:300% 100%;animation:slide 1.2s infinite}
+@keyframes slide{0%{background-position:100% 0}100%{background-position:-100% 0}}
+
+/* ─── TABS ─── */
+.page{display:none}.page.on{display:block}
+
+/* ─── BOTTOM NAV ─── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  height:calc(var(--nav)+var(--safe));padding-bottom:var(--safe);
+  background:rgba(6,8,15,.97);backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);display:flex;align-items:stretch;
+}
+.nbtn{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;border:none;background:none;cursor:pointer;padding:8px 4px;
+  color:var(--muted);font-family:'Vazirmatn',sans-serif;font-size:10px;font-weight:600;
+  transition:color .2s;position:relative;
+}
+.nbtn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;transition:all .2s}
+.nbtn.on{color:var(--accent)}
+.nbtn.on svg{stroke:var(--accent);filter:drop-shadow(0 0 5px rgba(229,9,20,.7))}
+.nbtn.on::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;
+  background:var(--accent);border-radius:0 0 2px 2px}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;height:58vw;max-height:400px;min-height:240px;
+  display:flex;align-items:flex-end;padding:0 16px 20px;overflow:hidden;
+}
+.hero-bg{position:absolute;inset:0}
+.hero-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.28}
+.hero-grad{position:absolute;inset:0;
+  background:linear-gradient(to top,var(--bg) 0%,rgba(6,8,15,.6) 45%,rgba(6,8,15,.05) 100%),
+             linear-gradient(to left,rgba(6,8,15,.7) 0%,transparent 60%)}
+.hero-decor{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 20% 70%,rgba(229,9,20,.2) 0%,transparent 55%)}
+.hero-content{position:relative;width:100%}
+.hero-tags{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.htag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:700}
+.ht-type{background:var(--accent);color:#fff}
+.ht-year{background:rgba(245,197,24,.15);color:var(--gold);border:1px solid rgba(245,197,24,.3)}
+.ht-cat{background:rgba(255,255,255,.08);color:var(--muted)}
+.hero-title{font-size:clamp(1.15rem,5vw,2rem);font-weight:900;color:#fff;
+  line-height:1.2;margin-bottom:4px;text-shadow:0 1px 12px rgba(0,0,0,.8)}
+.hero-desc{font-size:11px;color:rgba(232,234,240,.6);line-height:1.6;
+  margin-bottom:14px;max-width:400px;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hero-btns{display:flex;gap:8px}
+.hbtn{display:inline-flex;align-items:center;gap:6px;border:none;cursor:pointer;
+  font-family:'Vazirmatn',sans-serif;font-weight:700;border-radius:9px;transition:all .2s}
+.hbtn-play{background:var(--accent);color:#fff;padding:9px 20px;font-size:13px;
+  box-shadow:0 3px 16px rgba(229,9,20,.5)}
+.hbtn-play:hover{background:#c1070f;transform:translateY(-1px)}
+.hbtn-play svg{width:14px;height:14px;fill:white}
+.hbtn-info{background:rgba(255,255,255,.12);color:var(--text);padding:9px 16px;font-size:12px;
+  border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(4px)}
+.hbtn-info:hover{background:rgba(255,255,255,.2)}
+
+/* ─── SECTION ─── */
+.sec{margin:0 0 28px}
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;margin-bottom:12px;
+}
+.sec-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:#fff}
+.sec-icon{font-size:16px}
+.sec-bar{width:3px;height:16px;border-radius:2px;flex-shrink:0}
+.see-all{font-size:11px;color:var(--muted);cursor:pointer;transition:color .2s}
+.see-all:hover{color:var(--accent)}
+
+/* ─── HORIZONTAL SCROLL ─── */
+.hscroll{display:flex;gap:10px;padding:0 12px;overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none}
+.hscroll::-webkit-scrollbar{display:none}
+.hscroll .card{flex-shrink:0;width:130px;scroll-snap-align:start}
+@media(min-width:480px){.hscroll .card{width:150px}}
+
+/* ─── GRID (full page) ─── */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:0 12px}
+@media(min-width:480px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:640px){.grid{grid-template-columns:repeat(5,1fr)}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(6,1fr)}}
+
+/* ─── CARD ─── */
+.card{background:var(--card);border-radius:10px;overflow:hidden;cursor:pointer;
+  border:1px solid var(--border);transition:transform .22s,box-shadow .22s}
+.card:hover{transform:translateY(-5px) scale(1.025);
+  box-shadow:0 10px 28px rgba(0,0,0,.55),0 0 0 1px rgba(229,9,20,.2)}
+.card:active{transform:scale(.95)}
+.card-poster{position:relative;aspect-ratio:2/3;overflow:hidden;
+  background:linear-gradient(145deg,#1a2236,#0d1322)}
+.card-poster img{width:100%;height:100%;object-fit:cover;transition:transform .4s;display:block}
+.card:hover .card-poster img{transform:scale(1.06)}
+.card-ph{width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;color:#1e2d45;font-size:24px}
+.card-ph span{font-size:8px;color:var(--muted);text-align:center;padding:0 4px;line-height:1.4}
+.card-badge{position:absolute;top:6px;right:6px;font-size:8px;font-weight:800;
+  padding:2px 5px;border-radius:4px;color:#fff;letter-spacing:.3px}
+.b-red{background:var(--accent)}.b-blue{background:var(--blue)}
+.b-purple{background:var(--purple)}.b-pink{background:var(--pink)}
+.b-green{background:var(--green)}.b-orange{background:var(--orange)}
+.card-ov{position:absolute;inset:0;background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .22s}
+.card:hover .card-ov{opacity:1}
+.pcircle{width:40px;height:40px;background:var(--accent);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 14px rgba(229,9,20,.7)}
+.pcircle svg{width:16px;height:16px;fill:white;margin-right:-2px}
+.card-info{padding:7px 8px 9px}
+.card-title{font-size:10px;font-weight:600;color:var(--text);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.card-meta{display:flex;justify-content:space-between;font-size:9px;color:var(--muted)}
+.crating{color:var(--gold);font-weight:700}
+
+/* ─── PAGE HEADER ─── */
+.pg-head{padding:14px 16px 2px;margin-bottom:10px}
+.pg-title{font-size:19px;font-weight:800;color:#fff}
+.pg-sub{font-size:12px;color:var(--muted);margin-top:3px}
+
+/* ─── STATUS ─── */
+.status{text-align:center;padding:40px 24px;color:var(--muted)}
+.sicon{font-size:44px;margin-bottom:10px}
+.status p{font-size:13px;line-height:1.7}
+
+/* ─── SEARCH OVERLAY ─── */
+.sovl{position:fixed;inset:0;z-index:500;background:rgba(6,8,15,.97);
+  opacity:0;pointer-events:none;transition:opacity .2s;padding:12px 16px}
+.sovl.on{opacity:1;pointer-events:all}
+.sbar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sinput{flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;font-family:'Vazirmatn',sans-serif;
+  font-size:14px;color:var(--text);outline:none;text-align:right}
+.sinput::placeholder{color:var(--muted)}
+.sclose{background:none;border:none;color:var(--muted);cursor:pointer;font-size:22px;padding:4px}
+#s-results{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;overflow-y:auto;
+  max-height:calc(100vh - 80px)}
+@media(min-width:480px){#s-results{grid-template-columns:repeat(4,1fr)}}
+
+/* ─── MODAL ─── */
+.ovl{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.95);backdrop-filter:blur(16px);
+  display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+@media(min-width:640px){.ovl{align-items:center;padding:20px}}
+.ovl.on{opacity:1;pointer-events:all}
+.modal{background:var(--surface);width:100%;border-radius:20px 20px 0 0;overflow:hidden;
+  border:1px solid var(--border);box-shadow:0 -6px 40px rgba(0,0,0,.7);
+  transform:translateY(50px);transition:transform .3s;max-height:94vh;overflow-y:auto}
+@media(min-width:640px){.modal{border-radius:14px;max-width:920px;margin:auto;transform:scale(.94)}}
+.ovl.on .modal{transform:translateY(0)}
+@media(min-width:640px){.ovl.on .modal{transform:scale(1)}}
+.drag{width:38px;height:4px;background:rgba(255,255,255,.14);border-radius:2px;margin:10px auto 0}
+.mtop{display:flex;align-items:center;gap:8px;padding:10px 14px 12px}
+.mname{font-size:13px;font-weight:700;color:#fff;flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mclose{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);border:none;
+  cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:background .2s}
+.mclose:hover{background:var(--accent);color:#fff}
+.mclose svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5}
+.player{position:relative;width:100%;aspect-ratio:16/9;background:#000}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.mdetail{padding:14px;display:flex;gap:12px}
+.mposter{flex-shrink:0;width:76px;height:114px;border-radius:8px;overflow:hidden;background:var(--card)}
+.mposter img{width:100%;height:100%;object-fit:cover}
+.mposter .card-ph{font-size:20px}
+.minfo{flex:1;min-width:0}
+.minfo h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:3px}
+.minfo .msub{font-size:11px;color:var(--muted);margin-bottom:8px}
+.mtags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.tag{display:inline-flex;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.tred{background:var(--accent);color:#fff}
+.tblue{background:rgba(59,130,246,.18);color:#93c5fd;border:1px solid rgba(59,130,246,.25)}
+.tgold{background:rgba(245,197,24,.12);color:var(--gold);border:1px solid rgba(245,197,24,.25)}
+.tmuted{background:rgba(255,255,255,.07);color:var(--muted)}
+.mdesc-text{font-size:11px;color:var(--muted);line-height:1.7;
+  display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.open-site{display:block;width:calc(100% - 28px);margin:0 14px 14px;
+  background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--muted);
+  font-family:'Vazirmatn',sans-serif;font-size:12px;padding:9px;border-radius:8px;
+  cursor:pointer;text-align:center;transition:all .2s}
+.open-site:hover{background:rgba(255,255,255,.12);color:var(--text)}
+</style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
+<div id="topbar"></div>
+
 <header>
-  <a href="#" class="logo">PAW<span>فیلم و سریال</span></a>
-  <nav>
-    <a href="#" class="active">خانه</a>
-    <a href="#series">سریال‌ها</a>
-    <a href="#movies">فیلم‌ها</a>
-  </nav>
+  <div class="logo">
+    <span class="logo-text">PAW</span>
+    <span class="logo-sub">فیلم و سریال</span>
+  </div>
+  <button class="search-btn" onclick="openSearch()">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+  </button>
 </header>
 
-<!-- ── HERO ── -->
-<div class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content" id="hero-content">
-    <!-- filled by JS -->
+<!-- ═══ PAGES ═══ -->
+
+<!-- HOME -->
+<div class="page on" id="pg-home">
+  <div class="hero" id="hero">
+    <div class="hero-bg">
+      <img class="hero-cover" id="hero-cover" src="" alt="" style="display:none"/>
+      <div class="hero-decor"></div>
+      <div class="hero-grad"></div>
+    </div>
+    <div class="hero-content" id="hero-content">
+      <div class="hero-tags"><span class="htag ht-type">در حال بارگذاری</span></div>
+      <div class="hero-title" style="color:var(--muted);font-weight:500;font-size:1rem">لطفاً صبر کنید...</div>
+    </div>
   </div>
+
+  <!-- SECTIONS injected by JS -->
+  <div id="home-sections"></div>
 </div>
 
-<!-- ── MAIN ── -->
-<main>
-  <section class="section" id="series-section">
-    <div class="section-header">
-      <h2 class="section-title" id="series">سریال‌ها</h2>
-    </div>
-    <div class="grid" id="series-grid"></div>
-  </section>
+<!-- MOVIES -->
+<div class="page" id="pg-movies">
+  <div class="pg-head">
+    <div class="pg-title">فیلم‌ها</div>
+    <div class="pg-sub" id="movies-sub">در حال بارگذاری...</div>
+  </div>
+  <div class="grid" id="movies-grid"></div>
+</div>
 
-  <section class="section" id="movies-section">
-    <div class="section-header">
-      <h2 class="section-title" id="movies">فیلم‌ها</h2>
-    </div>
-    <div class="grid" id="movies-grid"></div>
-  </section>
-</main>
+<!-- SERIES -->
+<div class="page" id="pg-series">
+  <div class="pg-head">
+    <div class="pg-title">سریال‌ها</div>
+    <div class="pg-sub" id="series-sub">در حال بارگذاری...</div>
+  </div>
+  <div class="grid" id="series-grid"></div>
+</div>
 
-<!-- ── MODAL PLAYER ── -->
-<div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-title"></span>
-      <button class="modal-close" onclick="closePlayer()">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path d="M18 6L6 18M6 6l12 12"/>
-        </svg>
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="nbtn on" data-pg="home" onclick="go('home')">
+    <svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H5a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
+    خانه
+  </button>
+  <button class="nbtn" data-pg="movies" onclick="go('movies')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M7 4v16M17 4v16M2 9h5M17 9h5M2 15h5M17 15h5"/></svg>
+    فیلم
+  </button>
+  <button class="nbtn" data-pg="series" onclick="go('series')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+    سریال
+  </button>
+</nav>
+
+<!-- SEARCH -->
+<div class="sovl" id="sovl">
+  <div class="sbar">
+    <input class="sinput" id="sinput" type="search" placeholder="جستجوی فیلم یا سریال..." oninput="doSearch(this.value)" autocomplete="off"/>
+    <button class="sclose" onclick="closeSearch()">✕</button>
+  </div>
+  <div id="s-results"></div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div class="ovl" id="ovl" onclick="bgClose(event)">
+  <div class="modal" id="modal">
+    <div class="drag"></div>
+    <div class="mtop">
+      <span class="mname" id="mname"></span>
+      <button class="mclose" onclick="closePlayer()">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="player-wrap">
-      <iframe id="player-iframe" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
-    <div class="modal-details" id="modal-details"></div>
+    <div class="player"><iframe id="iframe" allowfullscreen allow="autoplay;fullscreen;picture-in-picture"></iframe></div>
+    <div class="mdetail" id="mdetail"></div>
+    <button class="open-site" id="open-site-btn" onclick="openSite()">🔗 مشاهده در سایت اصلی</button>
   </div>
 </div>
-
-<footer>
-  <p>© ۱۴۰۳ PAW — تماشای آنلاین فیلم و سریال</p>
-</footer>
 
 <script>
-// ──────────────────────────────────────────
-//  MOVIE DATA — برای اضافه کردن فیلم جدید
-//  اینجا آبجکت جدید اضافه کنید
-// ──────────────────────────────────────────
-const MOVIES = [
-  {
-    id: 1,
-    title: '۱۰ هزار سال',
-    originalTitle: '10 Thousand Years',
-    type: 'series',
-    genre: ['اکشن', 'ماجرایی', 'تاریخی'],
-    year: 2024,
-    rating: 8.2,
-    duration: '۴۵ دقیقه',
-    description: 'سریالی حماسی و هیجان‌انگیز از دنیای کهن که داستانی فراموش‌نشدنی را روایت می‌کند. با شخصیت‌هایی که هر کدام سرنوشتی منحصربه‌فرد دارند.',
-    poster: null,
-    icon: '🏺',
-    streamUrl: 'https://dls6.film2cinemaha.top/DonyayeSerial/10_thous.html',
-    featured: true,
-  },
-  // ── نمونه — فیلم‌های بیشتر اینجا اضافه کنید ──
-  // {
-  //   id: 2,
-  //   title: 'نام فارسی',
-  //   originalTitle: 'English Title',
-  //   type: 'movie',           // 'movie' یا 'series'
-  //   genre: ['درام', 'عاشقانه'],
-  //   year: 2024,
-  //   rating: 7.9,
-  //   duration: '۱:۵۰',
-  //   description: 'توضیح کوتاه ...',
-  //   poster: 'https://...',   // لینک پوستر یا null
-  //   icon: '🎬',              // اگر پوستر ندارد
-  //   streamUrl: 'https://...', // لینک پخش
-  //   featured: false,
-  // },
+// ════════════════════════════════════════════════════════
+//  CONFIG
+// ════════════════════════════════════════════════════════
+const SITE = 'https://serialblog1.top';
+
+const CATS = [
+  { id:'latest-movie', label:'جدیدترین فیلم‌ها', icon:'🎬', color:'#e50914',
+    badge:'b-red', urls:['/category/film/','/category/movie/','/category/films/'] },
+
+  { id:'latest-series', label:'جدیدترین سریال‌ها', icon:'📺', color:'#3b82f6',
+    badge:'b-blue', urls:['/category/serial/','/category/series/','/category/tv-series/'] },
+
+  { id:'animation', label:'انیمیشن', icon:'🎭', color:'#8b5cf6',
+    badge:'b-purple', urls:['/category/animation/','/category/animated/','/category/cartoon/','/category/انیمیشن/'] },
+
+  { id:'anime', label:'انیمه', icon:'⛩️', color:'#ec4899',
+    badge:'b-pink', urls:['/category/anime/','/category/انیمه/'] },
+
+  { id:'korean', label:'سریال کره‌ای', icon:'🇰🇷', color:'#22c55e',
+    badge:'b-green', urls:['/category/serial-koreaei/','/category/korean/','/category/koreans/','/category/کره-ای/'] },
+
+  { id:'turkish', label:'سریال ترکی', icon:'🇹🇷', color:'#f97316',
+    badge:'b-orange', urls:['/category/serial-torki/','/category/turkish/','/category/turkey/','/category/ترکی/'] },
 ];
 
-// ──────────────────────────────────────────
-//  RENDER
-// ──────────────────────────────────────────
-function renderHero() {
-  const m = MOVIES.find(x => x.featured) || MOVIES[0];
-  if (!m) return;
-  document.getElementById('hero-content').innerHTML = `
-    <div class="hero-badges">
-      <span class="badge ${m.type === 'series' ? 'badge-blue' : 'badge-red'}">${m.type === 'series' ? 'سریال' : 'فیلم'}</span>
-      <span class="badge badge-gold">⭐ ${m.rating}</span>
-      <span class="badge badge-muted">${m.year}</span>
-      ${m.duration ? `<span class="badge badge-muted">⏱ ${m.duration}</span>` : ''}
-    </div>
-    <h1>${m.title}</h1>
-    <p class="hero-orig">${m.originalTitle}</p>
-    <div class="hero-meta">
-      <span class="rating">★ ${m.rating}</span>
-      <span class="dot"></span>
-      <span>${m.year}</span>
-      ${m.duration ? `<span class="dot"></span><span>${m.duration}</span>` : ''}
-      <span class="dot"></span>
-      <span>${m.genre.join(' · ')}</span>
-    </div>
-    <p class="hero-desc">${m.description}</p>
-    <div class="hero-actions">
-      <button class="btn-play" onclick="openPlayer(${m.id})">
-        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        پخش آنلاین
-      </button>
-    </div>
-  `;
+// CORS proxies — tried in order
+const PROXIES = [
+  url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+  url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+  url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+];
+
+// ════════════════════════════════════════════════════════
+//  DATA STORE
+// ════════════════════════════════════════════════════════
+let STORE = {};    // catId → [{id,title,cover,link,catId,badge}]
+let ALL   = [];    // flat list
+let _uid  = 0;
+let _featured = null;
+let _activeItem = null;
+
+// ════════════════════════════════════════════════════════
+//  FETCH WITH FALLBACKS
+// ════════════════════════════════════════════════════════
+async function fetchHTML(path) {
+  const urls = Array.isArray(path) ? path : [path];
+
+  for (const p of urls) {
+    const full = SITE + p;
+    // 1. Direct
+    try {
+      const r = await fetch(full, { signal: AbortSignal.timeout(6000) });
+      if (r.ok) return { html: await r.text(), url: full };
+    } catch {}
+
+    // 2. CORS proxies
+    for (const proxy of PROXIES) {
+      try {
+        const r = await fetch(proxy(full), { signal: AbortSignal.timeout(8000) });
+        if (r.ok) {
+          const text = await r.text();
+          if (text.length > 200 && !text.includes('"error"')) return { html: text, url: full };
+        }
+      } catch {}
+    }
+  }
+  return null;
 }
 
-function movieCard(m) {
-  const typeBadge = m.type === 'series'
-    ? '<span class="card-type-badge badge-blue">سریال</span>'
-    : '<span class="card-type-badge badge-red">فیلم</span>';
+// ════════════════════════════════════════════════════════
+//  PARSE HTML → items
+// ════════════════════════════════════════════════════════
+function parseItems(html, catId, badge) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const items = [];
 
-  const poster = m.poster
-    ? `<img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=card-poster-placeholder>${m.icon || '🎬'}<span>${m.title}</span></div>'">`
-    : `<div class="card-poster-placeholder">${m.icon || '🎬'}<span>${m.title}</span></div>`;
+  // Try multiple WordPress/theme selectors
+  const articleSels = [
+    'article.post','article','.post-item','.movie-item','.entry',
+    '.item','.film-item','.media-item','.archive-item'
+  ];
 
-  return `
-    <div class="card" onclick="openPlayer(${m.id})">
-      <div class="card-poster">
-        ${poster}
-        ${typeBadge}
-        <div class="card-play-overlay">
-          <div class="play-btn-circle">
-            <svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          </div>
+  let articles = [];
+  for (const sel of articleSels) {
+    articles = [...doc.querySelectorAll(sel)];
+    if (articles.length >= 2) break;
+  }
+
+  // If no articles, try list items
+  if (articles.length < 2) {
+    articles = [...doc.querySelectorAll('li')].filter(li =>
+      li.querySelector('img') && li.querySelector('a')
+    );
+  }
+
+  for (const el of articles) {
+    // Title
+    const titleEl = el.querySelector([
+      'h2 a','h3 a','h4 a','.entry-title a','.post-title a',
+      '.title a','a[rel="bookmark"]','.film-title a','.name a'
+    ].join(','));
+    const title = titleEl?.textContent?.trim() || '';
+    if (!title || title.length < 2) continue;
+
+    // Link
+    const link = titleEl?.href || el.querySelector('a')?.href || '';
+    if (!link || link === window.location.href) continue;
+
+    // Cover image
+    const imgEl = el.querySelector([
+      'img.wp-post-image','img.attachment-post-thumbnail',
+      '.thumbnail img','.thumb img','.cover img',
+      '.post-thumbnail img','.entry-thumbnail img',
+      'figure img','img[loading]','img'
+    ].join(','));
+
+    let cover = imgEl?.src || imgEl?.dataset?.src || imgEl?.dataset?.lazy ||
+                imgEl?.getAttribute('data-original') || imgEl?.getAttribute('data-srcset')?.split(' ')[0] || '';
+
+    // Fix relative URLs
+    if (cover && cover.startsWith('/')) cover = SITE + cover;
+    if (cover && !cover.startsWith('http')) cover = '';
+
+    // Quality filter — skip tiny icons
+    if (cover && (cover.includes('avatar') || cover.includes('emoji') || cover.includes('logo'))) cover = '';
+
+    items.push({ id: ++_uid, title, cover, link, catId, badge });
+  }
+
+  return items;
+}
+
+// ════════════════════════════════════════════════════════
+//  LOAD CATEGORY
+// ════════════════════════════════════════════════════════
+async function loadCat(cat) {
+  const res = await fetchHTML(cat.urls);
+  if (!res) return [];
+  const items = parseItems(res.html, cat.id, cat.badge);
+  return items.slice(0, 20);
+}
+
+// ════════════════════════════════════════════════════════
+//  CARD HTML
+// ════════════════════════════════════════════════════════
+function cardHTML(m) {
+  const img = m.cover
+    ? `<img src="${m.cover}" loading="lazy" alt="" decoding="async"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+    : '';
+  const ph = `<div class="card-ph" style="${m.cover?'display:none':''}">${catIcon(m.catId)}<span>${m.title}</span></div>`;
+  return `<div class="card" onclick="openItem(${m.id})">
+    <div class="card-poster">
+      ${img}${ph}
+      <span class="card-badge ${m.badge}">${catLabel(m.catId)}</span>
+      <div class="card-ov"><div class="pcircle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+    </div>
+    <div class="card-info">
+      <div class="card-title">${m.title}</div>
+    </div>
+  </div>`;
+}
+
+function catIcon(id) {
+  return CATS.find(c => c.id === id)?.icon || '🎬';
+}
+function catLabel(id) {
+  const map = {
+    'latest-movie':'فیلم','latest-series':'سریال',
+    'animation':'انیمیشن','anime':'انیمه',
+    'korean':'کره‌ای','turkish':'ترکی'
+  };
+  return map[id] || '';
+}
+
+// ════════════════════════════════════════════════════════
+//  RENDER HOME SECTIONS
+// ════════════════════════════════════════════════════════
+function renderHomeSection(cat, items) {
+  if (!items.length) return;
+
+  const div = document.createElement('div');
+  div.className = 'sec';
+  div.id = 'sec-' + cat.id;
+  div.innerHTML = `
+    <div class="sec-head">
+      <div class="sec-title">
+        <span class="sec-bar" style="background:${cat.color}"></span>
+        <span class="sec-icon">${cat.icon}</span>
+        ${cat.label}
+      </div>
+      <span class="see-all" onclick="showAll('${cat.id}')">بیشتر ›</span>
+    </div>
+    <div class="hscroll" id="hs-${cat.id}">
+      ${items.map(cardHTML).join('')}
+    </div>`;
+  document.getElementById('home-sections').appendChild(div);
+}
+
+function showAll(catId) {
+  const cat = CATS.find(c => c.id === catId);
+  if (!cat) return;
+
+  if (catId === 'latest-movie') { go('movies'); return; }
+  if (catId === 'latest-series') { go('series'); return; }
+
+  // Show full-page category view
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('on'));
+
+  let pg = document.getElementById('pg-cat-' + catId);
+  if (!pg) {
+    pg = document.createElement('div');
+    pg.className = 'page';
+    pg.id = 'pg-cat-' + catId;
+    const items = STORE[catId] || [];
+    pg.innerHTML = `
+      <div class="pg-head" style="display:flex;align-items:center;gap:10px">
+        <button onclick="go('home')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px">‹</button>
+        <div>
+          <div class="pg-title">${cat.icon} ${cat.label}</div>
+          <div class="pg-sub">${items.length} مورد</div>
         </div>
       </div>
-      <div class="card-info">
-        <div class="card-title">${m.title}</div>
-        <div class="card-meta">
-          <span>${m.year}</span>
-          <span class="card-rating">★ ${m.rating}</span>
-        </div>
-        <div class="card-genres">
-          ${m.genre.slice(0,2).map(g => `<span class="card-genre">${g}</span>`).join('')}
-        </div>
-      </div>
+      <div class="grid">${items.map(cardHTML).join('')}</div>`;
+    document.body.insertBefore(pg, document.querySelector('.bnav'));
+  }
+  pg.classList.add('on');
+  window.scrollTo(0,0);
+}
+
+// ════════════════════════════════════════════════════════
+//  HERO
+// ════════════════════════════════════════════════════════
+function renderHero(m) {
+  _featured = m;
+  if (!m) return;
+  const cover = document.getElementById('hero-cover');
+  if (m.cover) { cover.src = m.cover; cover.style.display = ''; }
+  const catObj = CATS.find(c => c.id === m.catId);
+  document.getElementById('hero-content').innerHTML = `
+    <div class="hero-tags">
+      <span class="htag ht-type" style="background:${catObj?.color||'var(--accent)'}">${catIcon(m.catId)} ${catLabel(m.catId)}</span>
+    </div>
+    <div class="hero-title">${m.title}</div>
+    <div class="hero-btns">
+      <button class="hbtn hbtn-play" onclick="openItem(${m.id})">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>پخش آنلاین
+      </button>
+      <button class="hbtn hbtn-info" onclick="window.open('${m.link}','_blank')">اطلاعات بیشتر</button>
     </div>`;
 }
 
-function renderGrids() {
-  const series = MOVIES.filter(m => m.type === 'series');
-  const movies = MOVIES.filter(m => m.type === 'movie');
-
-  const seriesGrid = document.getElementById('series-grid');
-  const moviesGrid = document.getElementById('movies-grid');
-  const seriesSection = document.getElementById('series-section');
-  const moviesSection = document.getElementById('movies-section');
-
-  if (series.length > 0) {
-    seriesGrid.innerHTML = series.map(movieCard).join('');
-  } else {
-    seriesSection.style.display = 'none';
-  }
-
-  if (movies.length > 0) {
-    moviesGrid.innerHTML = movies.map(movieCard).join('');
-  } else {
-    moviesSection.style.display = 'none';
-  }
-
-  if (MOVIES.length === 0) {
-    document.querySelector('main').innerHTML = '<div class="empty"><div class="empty-icon">🎬</div><p>هنوز محتوایی اضافه نشده.</p></div>';
-  }
-}
-
-// ──────────────────────────────────────────
+// ════════════════════════════════════════════════════════
 //  PLAYER
-// ──────────────────────────────────────────
-function openPlayer(id) {
-  const m = MOVIES.find(x => x.id === id);
+// ════════════════════════════════════════════════════════
+function openItem(id) {
+  const m = ALL.find(x => x.id === id);
   if (!m) return;
+  _activeItem = m;
 
-  document.getElementById('modal-title').textContent = m.title;
-  document.getElementById('player-iframe').src = m.streamUrl;
+  document.getElementById('mname').textContent = m.title;
+  document.getElementById('iframe').src = m.link;
+  document.getElementById('open-site-btn').style.display = '';
 
-  const posterHTML = m.poster
-    ? `<img src="${m.poster}" alt="${m.title}" class="modal-poster">`
-    : `<div class="modal-poster-placeholder">${m.icon || '🎬'}</div>`;
-
-  document.getElementById('modal-details').innerHTML = `
-    <div>
-      <div class="modal-info-title">${m.title}</div>
-      <div class="modal-info-orig">${m.originalTitle}</div>
-      <div class="modal-badges">
-        <span class="badge ${m.type === 'series' ? 'badge-blue' : 'badge-red'}">${m.type === 'series' ? 'سریال' : 'فیلم'}</span>
-        <span class="badge badge-gold">★ ${m.rating}</span>
-        <span class="badge badge-muted">${m.year}</span>
-        ${m.duration ? `<span class="badge badge-muted">⏱ ${m.duration}</span>` : ''}
-        ${m.genre.map(g => `<span class="badge badge-muted">${g}</span>`).join('')}
+  const ph = m.cover
+    ? `<img src="${m.cover}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : `<div class="card-ph" style="height:100%;font-size:22px">${catIcon(m.catId)}</div>`;
+  const catObj = CATS.find(c => c.id === m.catId);
+  document.getElementById('mdetail').innerHTML = `
+    <div class="mposter">${ph}</div>
+    <div class="minfo">
+      <h3>${m.title}</h3>
+      <div class="mtags">
+        <span class="tag" style="background:${catObj?.color||'var(--accent)'};color:#fff">${catIcon(m.catId)} ${catLabel(m.catId)}</span>
       </div>
-      <p class="modal-desc">${m.description}</p>
-    </div>
-    ${posterHTML}
-  `;
+      <p class="mdesc-text">برای مشاهده جزئیات بیشتر روی «مشاهده در سایت اصلی» بزنید.</p>
+    </div>`;
 
-  document.getElementById('modal').classList.add('open');
+  document.getElementById('ovl').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 
+function openSite() {
+  if (_activeItem) window.open(_activeItem.link, '_blank');
+}
+
 function closePlayer() {
-  document.getElementById('modal').classList.remove('open');
-  document.getElementById('player-iframe').src = '';
+  document.getElementById('ovl').classList.remove('on');
+  document.getElementById('iframe').src = '';
   document.body.style.overflow = '';
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById('modal')) closePlayer();
+function bgClose(e) { if (e.target.id === 'ovl') closePlayer(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePlayer(); closeSearch(); } });
+
+// ════════════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════════════
+function go(pg) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.nbtn').forEach(b => b.classList.remove('on'));
+  document.getElementById('pg-' + pg).classList.add('on');
+  document.querySelector('[data-pg="' + pg + '"]')?.classList.add('on');
+  window.scrollTo(0,0);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closePlayer(); });
+// ════════════════════════════════════════════════════════
+//  SEARCH
+// ════════════════════════════════════════════════════════
+function openSearch() {
+  document.getElementById('sovl').classList.add('on');
+  setTimeout(() => document.getElementById('sinput').focus(), 100);
+}
+function closeSearch() {
+  document.getElementById('sovl').classList.remove('on');
+  document.getElementById('sinput').value = '';
+  document.getElementById('s-results').innerHTML = '';
+}
+function doSearch(q) {
+  const term = q.trim().toLowerCase();
+  const el = document.getElementById('s-results');
+  if (!term) { el.innerHTML = ''; return; }
+  const res = ALL.filter(m => m.title.toLowerCase().includes(term));
+  el.innerHTML = res.length
+    ? res.map(cardHTML).join('')
+    : '<div class="status"><div class="sicon">🔍</div><p>نتیجه‌ای یافت نشد</p></div>';
+}
 
-// ──────────────────────────────────────────
-//  INIT
-// ──────────────────────────────────────────
-renderHero();
-renderGrids();
+// ════════════════════════════════════════════════════════
+//  LOADING INDICATOR
+// ════════════════════════════════════════════════════════
+let _loading = 0;
+function setLoading(on) {
+  _loading += on ? 1 : -1;
+  document.getElementById('topbar').style.display = _loading > 0 ? 'block' : 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  MOVIES / SERIES FULL PAGES
+// ════════════════════════════════════════════════════════
+function renderFullPages() {
+  const movies = ALL.filter(m => m.catId === 'latest-movie');
+  const series = ALL.filter(m => m.catId === 'latest-series');
+
+  const mg = document.getElementById('movies-grid');
+  const sg = document.getElementById('series-grid');
+
+  mg.innerHTML = movies.length
+    ? movies.map(cardHTML).join('')
+    : '<div class="status"><div class="sicon">🎬</div><p>در حال بارگذاری...</p></div>';
+  sg.innerHTML = series.length
+    ? series.map(cardHTML).join('')
+    : '<div class="status"><div class="sicon">📺</div><p>در حال بارگذاری...</p></div>';
+
+  document.getElementById('movies-sub').textContent = movies.length ? movies.length + ' فیلم' : 'در حال بارگذاری...';
+  document.getElementById('series-sub').textContent = series.length ? series.length + ' سریال' : 'در حال بارگذاری...';
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT — load all categories
+// ════════════════════════════════════════════════════════
+async function init() {
+  // Load categories in parallel with progress
+  const promises = CATS.map(async (cat) => {
+    setLoading(true);
+    try {
+      const items = await loadCat(cat);
+      STORE[cat.id] = items;
+      ALL = [...ALL, ...items];
+
+      if (items.length > 0) {
+        renderHomeSection(cat, items.slice(0, 12));
+
+        // Set hero to first movie/series found
+        if (!_featured && (cat.id === 'latest-movie' || cat.id === 'latest-series')) {
+          renderHero(items[0]);
+        }
+
+        // Update full pages live
+        renderFullPages();
+      }
+    } catch (e) {
+      console.warn('Cat load error:', cat.id, e);
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  await Promise.allSettled(promises);
+
+  // Final render
+  renderFullPages();
+
+  if (ALL.length === 0) {
+    document.getElementById('hero-content').innerHTML = `
+      <div class="hero-title" style="color:var(--muted);font-size:1rem;font-weight:500">
+        ارتباط با سایت برقرار نشد
+      </div>
+      <div class="hero-desc">سایت اصلی را مستقیم باز کنید</div>
+      <button class="hbtn hbtn-info" onclick="window.open('${SITE}','_blank')">باز کردن سایت</button>`;
+    document.getElementById('home-sections').innerHTML = `
+      <div class="status">
+        <div class="sicon">🌐</div>
+        <p>محتوا بارگذاری نشد.<br/>ممکن است سایت بلوک باشد یا CORS اجازه ندهد.<br/><br/>
+        <a href="${SITE}" target="_blank" style="color:var(--accent)">مستقیم به سایت بروید ›</a></p>
+      </div>`;
+  }
+}
+
+init();
 </script>
 </body>
 </html>
