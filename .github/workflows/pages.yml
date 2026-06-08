@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [claude/paw-movie-series-page-5C41b, main]
   workflow_dispatch:
 
 permissions:
