@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAW | فیلم و سریال</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b14;
+      --surface: #0f1623;
+      --card: #131929;
+      --card-hover: #1a2236;
+      --accent: #e50914;
+      --accent-hover: #c1070f;
+      --gold: #f5c518;
+      --blue: #3b82f6;
+      --text: #e8eaf0;
+      --muted: #7a8299;
+      --border: rgba(255,255,255,0.07);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Vazirmatn', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--surface); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ──── HEADER ──── */
+    header {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+      padding: 0 24px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(8,11,20,.95) 0%, rgba(8,11,20,0) 100%);
+      backdrop-filter: blur(8px);
+    }
+
+    .logo {
+      font-size: 26px; font-weight: 900; letter-spacing: 4px;
+      color: var(--accent); text-decoration: none;
+      text-shadow: 0 0 30px rgba(229,9,20,.4);
+    }
+
+    .logo span { color: var(--text); font-size: 12px; font-weight: 400; letter-spacing: 1px; opacity: .6; margin-right: 6px; }
+
+    nav { display: flex; gap: 24px; }
+    nav a {
+      color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+      transition: color .2s;
+    }
+    nav a:hover, nav a.active { color: var(--text); }
+
+    /* ──── HERO ──── */
+    .hero {
+      position: relative; height: 85vh; min-height: 520px;
+      display: flex; align-items: flex-end;
+      padding: 0 32px 60px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #0d1f3c 0%, #1a0a1e 50%, #0d0305 100%);
+    }
+
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(229,9,20,.15) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 30%, rgba(59,130,246,.1) 0%, transparent 50%);
+    }
+
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, var(--bg) 0%, rgba(8,11,20,.5) 40%, rgba(8,11,20,.1) 100%);
+    }
+
+    .hero-content { position: relative; max-width: 560px; }
+
+    .hero-badges { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 12px; border-radius: 6px;
+      font-size: 12px; font-weight: 600;
+    }
+    .badge-red { background: var(--accent); color: #fff; }
+    .badge-gold { background: rgba(245,197,24,.15); color: var(--gold); border: 1px solid rgba(245,197,24,.3); }
+    .badge-blue { background: rgba(59,130,246,.15); color: #93c5fd; border: 1px solid rgba(59,130,246,.3); }
+    .badge-muted { background: rgba(255,255,255,.08); color: var(--muted); }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900; line-height: 1.1;
+      color: #fff; margin-bottom: 8px;
+      text-shadow: 0 2px 20px rgba(0,0,0,.5);
+    }
+
+    .hero-orig { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+
+    .hero-meta {
+      display: flex; gap: 16px; align-items: center;
+      font-size: 13px; color: var(--muted); margin-bottom: 16px;
+    }
+
+    .hero-meta .rating { color: var(--gold); font-weight: 700; font-size: 15px; }
+    .hero-meta .dot { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
+
+    .hero-desc {
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+      margin-bottom: 28px; max-width: 480px;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn-play {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent); color: #fff;
+      border: none; padding: 12px 28px; border-radius: 10px;
+      font-family: 'Vazirmatn', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: all .2s;
+      box-shadow: 0 4px 20px rgba(229,9,20,.4);
+    }
+    .btn-play:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 24px rgba(229,9,20,.5); }
+
+    .btn-info {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.1); color: var(--text);
+      border: 1px solid var(--border); padding: 12px 24px; border-radius: 10px;
+      font-family: 'Vazirmatn', sans-serif; font-size: 14px; font-weight: 600;
+      cursor: pointer; transition: all .2s; backdrop-filter: blur(4px);
+    }
+    .btn-info:hover { background: rgba(255,255,255,.18); }
+
+    /* ──── MAIN ──── */
+    main { max-width: 1400px; margin: 0 auto; padding: 0 24px 60px; }
+
+    .section { margin-bottom: 48px; }
+
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px; font-weight: 700; color: #fff;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .section-title::before {
+      content: '';
+      display: block; width: 4px; height: 20px;
+      background: var(--accent); border-radius: 2px;
+    }
+
+    .see-all {
+      font-size: 13px; color: var(--muted); text-decoration: none;
+      transition: color .2s;
+    }
+    .see-all:hover { color: var(--accent); }
+
+    /* ──── GRID ──── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    }
+
+    /* ──── CARD ──── */
+    .card {
+      background: var(--card);
+      border-radius: 12px; overflow: hidden;
+      cursor: pointer; transition: all .3s;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 40px rgba(0,0,0,.6), 0 0 0 1px rgba(229,9,20,.3);
+      background: var(--card-hover);
+    }
+
+    .card-poster {
+      position: relative; aspect-ratio: 2/3; overflow: hidden;
+      background: linear-gradient(135deg, #1a2236, #0f1623);
+    }
+
+    .card-poster img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .5s;
+    }
+
+    .card:hover .card-poster img { transform: scale(1.08); }
+
+    .card-poster-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 8px;
+      color: var(--muted); font-size: 36px;
+    }
+
+    .card-poster-placeholder span {
+      font-size: 11px; font-weight: 600; color: var(--muted);
+      text-align: center; padding: 0 8px;
+    }
+
+    .card-type-badge {
+      position: absolute; top: 8px; right: 8px;
+      font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px;
+    }
+
+    .card-play-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.5);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .3s;
+    }
+
+    .card:hover .card-play-overlay { opacity: 1; }
+
+    .play-btn-circle {
+      width: 52px; height: 52px;
+      background: var(--accent); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(229,9,20,.6);
+      transition: transform .2s;
+    }
+
+    .card:hover .play-btn-circle { transform: scale(1.1); }
+
+    .play-btn-circle svg { margin-right: -3px; }
+
+    .card-info { padding: 12px; }
+    .card-title { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .card-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; color: var(--muted);
+    }
+
+    .card-rating { color: var(--gold); font-weight: 700; font-size: 12px; display: flex; align-items: center; gap: 2px; }
+
+    .card-genres { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+    .card-genre { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,.06); color: var(--muted); }
+
+    /* ──── MODAL ──── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,.92); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+      opacity: 0; pointer-events: none; transition: opacity .3s;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 16px; overflow: hidden;
+      width: 100%; max-width: 960px;
+      border: 1px solid var(--border);
+      box-shadow: 0 32px 80px rgba(0,0,0,.8);
+      transform: scale(.95); transition: transform .3s;
+      max-height: 90vh; overflow-y: auto;
+    }
+
+    .modal-overlay.open .modal { transform: scale(1); }
+
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title { font-size: 16px; font-weight: 700; color: #fff; }
+
+    .modal-close {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,.08);
+      border: none; cursor: pointer; color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .modal-close:hover { background: var(--accent); color: #fff; }
+
+    .player-wrap {
+      position: relative; width: 100%; aspect-ratio: 16/9;
+      background: #000;
+    }
+
+    .player-wrap iframe {
+      position: absolute; inset: 0; width: 100%; height: 100%; border: none;
+    }
+
+    .modal-details { padding: 20px; display: grid; grid-template-columns: 1fr auto; gap: 20px; }
+
+    .modal-info-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .modal-info-orig { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+
+    .modal-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+
+    .modal-desc { font-size: 13px; color: var(--muted); line-height: 1.75; }
+
+    .modal-poster {
+      width: 100px; height: 150px; border-radius: 10px;
+      object-fit: cover; flex-shrink: 0;
+    }
+
+    .modal-poster-placeholder {
+      width: 100px; height: 150px; border-radius: 10px;
+      background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; flex-shrink: 0;
+    }
+
+    /* ──── EMPTY ──── */
+    .empty {
+      text-align: center; padding: 80px 24px; color: var(--muted);
+    }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; }
+
+    /* ──── FOOTER ──── */
+    footer {
+      text-align: center; padding: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted); font-size: 12px;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .hero { padding: 0 16px 40px; }
+      .hero h1 { font-size: 1.8rem; }
+      nav { display: none; }
+      .modal-details { grid-template-columns: 1fr; }
+      .modal-poster, .modal-poster-placeholder { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <a href="#" class="logo">PAW<span>فیلم و سریال</span></a>
+  <nav>
+    <a href="#" class="active">خانه</a>
+    <a href="#series">سریال‌ها</a>
+    <a href="#movies">فیلم‌ها</a>
+  </nav>
+</header>
+
+<!-- ── HERO ── -->
+<div class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content" id="hero-content">
+    <!-- filled by JS -->
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<main>
+  <section class="section" id="series-section">
+    <div class="section-header">
+      <h2 class="section-title" id="series">سریال‌ها</h2>
+    </div>
+    <div class="grid" id="series-grid"></div>
+  </section>
+
+  <section class="section" id="movies-section">
+    <div class="section-header">
+      <h2 class="section-title" id="movies">فیلم‌ها</h2>
+    </div>
+    <div class="grid" id="movies-grid"></div>
+  </section>
+</main>
+
+<!-- ── MODAL PLAYER ── -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="modal-close" onclick="closePlayer()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="player-wrap">
+      <iframe id="player-iframe" allowfullscreen allow="autoplay; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    <div class="modal-details" id="modal-details"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© ۱۴۰۳ PAW — تماشای آنلاین فیلم و سریال</p>
+</footer>
+
+<script>
+// ──────────────────────────────────────────
+//  MOVIE DATA — برای اضافه کردن فیلم جدید
+//  اینجا آبجکت جدید اضافه کنید
+// ──────────────────────────────────────────
+const MOVIES = [
+  {
+    id: 1,
+    title: '۱۰ هزار سال',
+    originalTitle: '10 Thousand Years',
+    type: 'series',
+    genre: ['اکشن', 'ماجرایی', 'تاریخی'],
+    year: 2024,
+    rating: 8.2,
+    duration: '۴۵ دقیقه',
+    description: 'سریالی حماسی و هیجان‌انگیز از دنیای کهن که داستانی فراموش‌نشدنی را روایت می‌کند. با شخصیت‌هایی که هر کدام سرنوشتی منحصربه‌فرد دارند.',
+    poster: null,
+    icon: '🏺',
+    streamUrl: 'https://dls6.film2cinemaha.top/DonyayeSerial/10_thous.html',
+    featured: true,
+  },
+  // ── نمونه — فیلم‌های بیشتر اینجا اضافه کنید ──
+  // {
+  //   id: 2,
+  //   title: 'نام فارسی',
+  //   originalTitle: 'English Title',
+  //   type: 'movie',           // 'movie' یا 'series'
+  //   genre: ['درام', 'عاشقانه'],
+  //   year: 2024,
+  //   rating: 7.9,
+  //   duration: '۱:۵۰',
+  //   description: 'توضیح کوتاه ...',
+  //   poster: 'https://...',   // لینک پوستر یا null
+  //   icon: '🎬',              // اگر پوستر ندارد
+  //   streamUrl: 'https://...', // لینک پخش
+  //   featured: false,
+  // },
+];
+
+// ──────────────────────────────────────────
+//  RENDER
+// ──────────────────────────────────────────
+function renderHero() {
+  const m = MOVIES.find(x => x.featured) || MOVIES[0];
+  if (!m) return;
+  document.getElementById('hero-content').innerHTML = `
+    <div class="hero-badges">
+      <span class="badge ${m.type === 'series' ? 'badge-blue' : 'badge-red'}">${m.type === 'series' ? 'سریال' : 'فیلم'}</span>
+      <span class="badge badge-gold">⭐ ${m.rating}</span>
+      <span class="badge badge-muted">${m.year}</span>
+      ${m.duration ? `<span class="badge badge-muted">⏱ ${m.duration}</span>` : ''}
+    </div>
+    <h1>${m.title}</h1>
+    <p class="hero-orig">${m.originalTitle}</p>
+    <div class="hero-meta">
+      <span class="rating">★ ${m.rating}</span>
+      <span class="dot"></span>
+      <span>${m.year}</span>
+      ${m.duration ? `<span class="dot"></span><span>${m.duration}</span>` : ''}
+      <span class="dot"></span>
+      <span>${m.genre.join(' · ')}</span>
+    </div>
+    <p class="hero-desc">${m.description}</p>
+    <div class="hero-actions">
+      <button class="btn-play" onclick="openPlayer(${m.id})">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        پخش آنلاین
+      </button>
+    </div>
+  `;
+}
+
+function movieCard(m) {
+  const typeBadge = m.type === 'series'
+    ? '<span class="card-type-badge badge-blue">سریال</span>'
+    : '<span class="card-type-badge badge-red">فیلم</span>';
+
+  const poster = m.poster
+    ? `<img src="${m.poster}" alt="${m.title}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=card-poster-placeholder>${m.icon || '🎬'}<span>${m.title}</span></div>'">`
+    : `<div class="card-poster-placeholder">${m.icon || '🎬'}<span>${m.title}</span></div>`;
+
+  return `
+    <div class="card" onclick="openPlayer(${m.id})">
+      <div class="card-poster">
+        ${poster}
+        ${typeBadge}
+        <div class="card-play-overlay">
+          <div class="play-btn-circle">
+            <svg width="22" height="22" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-title">${m.title}</div>
+        <div class="card-meta">
+          <span>${m.year}</span>
+          <span class="card-rating">★ ${m.rating}</span>
+        </div>
+        <div class="card-genres">
+          ${m.genre.slice(0,2).map(g => `<span class="card-genre">${g}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderGrids() {
+  const series = MOVIES.filter(m => m.type === 'series');
+  const movies = MOVIES.filter(m => m.type === 'movie');
+
+  const seriesGrid = document.getElementById('series-grid');
+  const moviesGrid = document.getElementById('movies-grid');
+  const seriesSection = document.getElementById('series-section');
+  const moviesSection = document.getElementById('movies-section');
+
+  if (series.length > 0) {
+    seriesGrid.innerHTML = series.map(movieCard).join('');
+  } else {
+    seriesSection.style.display = 'none';
+  }
+
+  if (movies.length > 0) {
+    moviesGrid.innerHTML = movies.map(movieCard).join('');
+  } else {
+    moviesSection.style.display = 'none';
+  }
+
+  if (MOVIES.length === 0) {
+    document.querySelector('main').innerHTML = '<div class="empty"><div class="empty-icon">🎬</div><p>هنوز محتوایی اضافه نشده.</p></div>';
+  }
+}
+
+// ──────────────────────────────────────────
+//  PLAYER
+// ──────────────────────────────────────────
+function openPlayer(id) {
+  const m = MOVIES.find(x => x.id === id);
+  if (!m) return;
+
+  document.getElementById('modal-title').textContent = m.title;
+  document.getElementById('player-iframe').src = m.streamUrl;
+
+  const posterHTML = m.poster
+    ? `<img src="${m.poster}" alt="${m.title}" class="modal-poster">`
+    : `<div class="modal-poster-placeholder">${m.icon || '🎬'}</div>`;
+
+  document.getElementById('modal-details').innerHTML = `
+    <div>
+      <div class="modal-info-title">${m.title}</div>
+      <div class="modal-info-orig">${m.originalTitle}</div>
+      <div class="modal-badges">
+        <span class="badge ${m.type === 'series' ? 'badge-blue' : 'badge-red'}">${m.type === 'series' ? 'سریال' : 'فیلم'}</span>
+        <span class="badge badge-gold">★ ${m.rating}</span>
+        <span class="badge badge-muted">${m.year}</span>
+        ${m.duration ? `<span class="badge badge-muted">⏱ ${m.duration}</span>` : ''}
+        ${m.genre.map(g => `<span class="badge badge-muted">${g}</span>`).join('')}
+      </div>
+      <p class="modal-desc">${m.description}</p>
+    </div>
+    ${posterHTML}
+  `;
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePlayer() {
+  document.getElementById('modal').classList.remove('open');
+  document.getElementById('player-iframe').src = '';
+  document.body.style.overflow = '';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closePlayer();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePlayer(); });
+
+// ──────────────────────────────────────────
+//  INIT
+// ──────────────────────────────────────────
+renderHero();
+renderGrids();
+</script>
+</body>
+</html>
