@@ -1,32 +1,58 @@
 import { JIKAN_BASE } from '../config'
 import type { Item } from '../types'
 
-function mapAnime(a: Record<string, unknown>): Item {
-  const images = a.images as { jpg?: { large_image_url?: string; image_url?: string } } | undefined
+interface JikanAnime {
+  mal_id: number
+  title: string
+  title_japanese: string
+  images: { jpg: { large_image_url?: string; image_url?: string } }
+  synopsis: string
+  year: number
+  score: number
+  genres: { name: string }[]
+}
+
+function mapAnime(a: JikanAnime): Item {
   return {
-    id: `jikan-${(a.mal_id as number)}`,
-    title: (a.title_japanese as string) || (a.title as string) || '',
-    cover: images?.jpg?.large_image_url || images?.jpg?.image_url || '',
-    desc: (a.synopsis as string) || '',
-    year: String((a.year as number) || ''),
+    id: `jikan-${a.mal_id}`,
+    title: a.title_japanese || a.title || '',
+    cover: a.images?.jpg?.large_image_url || a.images?.jpg?.image_url || '',
+    desc: (a.synopsis || '').slice(0, 300),
+    year: a.year ? String(a.year) : '',
     catId: 'anime',
     source: 'jikan',
-    sourceId: a.mal_id as number,
-    rating: (a.score as number) || undefined,
-    genres: ((a.genres as { name: string }[]) || []).map(g => g.name),
+    sourceId: a.mal_id,
+    rating: a.score || undefined,
+    genres: (a.genres || []).map(g => g.name),
   }
 }
 
-export async function fetchTopAnime(): Promise<Item[]> {
-  const r = await fetch(`${JIKAN_BASE}/top/anime?limit=20&type=tv`)
-  if (!r.ok) throw new Error('Jikan error')
-  const data = await r.json() as { data: Record<string, unknown>[] }
-  return data.data.map(mapAnime)
+const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
+
+export async function fetchJikanAnime(pages = 5): Promise<Item[]> {
+  const all: Item[] = []
+  for (let page = 1; page <= pages; page++) {
+    try {
+      const r = await fetch(`${JIKAN_BASE}/top/anime?limit=25&page=${page}&type=tv`)
+      if (!r.ok) break
+      const data = await r.json() as { data: JikanAnime[] }
+      all.push(...data.data.map(mapAnime))
+      if (page < pages) await sleep(400)
+    } catch { break }
+  }
+  return all
 }
 
-export async function fetchSeasonalAnime(): Promise<Item[]> {
-  const r = await fetch(`${JIKAN_BASE}/seasons/now?limit=20`)
-  if (!r.ok) throw new Error('Jikan seasonal error')
-  const data = await r.json() as { data: Record<string, unknown>[] }
-  return data.data.map(mapAnime)
+export async function fetchJikanMovies(pages = 3): Promise<Item[]> {
+  const all: Item[] = []
+  for (let page = 1; page <= pages; page++) {
+    try {
+      const r = await fetch(`${JIKAN_BASE}/top/anime?limit=25&page=${page}&type=movie`)
+      if (!r.ok) break
+      const data = await r.json() as { data: JikanAnime[] }
+      all.push(...data.data.map(a => ({ ...mapAnime(a), catId: 'animation' })))
+      if (page < pages) await sleep(400)
+    } catch { break }
+  }
+  return all
 }

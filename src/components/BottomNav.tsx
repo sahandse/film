@@ -1,9 +1,6 @@
 import type { Tab } from '../types'
 
-interface Props {
-  tab: Tab
-  setTab: (t: Tab) => void
-}
+interface Props { tab: Tab; setTab: (t: Tab) => void }
 
 export default function BottomNav({ tab, setTab }: Props) {
   return (
@@ -17,20 +14,17 @@ export default function BottomNav({ tab, setTab }: Props) {
       </button>
       <button className={`nbtn${tab === 'movies' ? ' on' : ''}`} onClick={() => setTab('movies')}>
         <svg viewBox="0 0 24 24">
-          <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
-          <line x1="7" y1="2" x2="7" y2="22" />
-          <line x1="17" y1="2" x2="17" y2="22" />
+          <rect x="2" y="2" width="20" height="20" rx="2" />
+          <line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" />
           <line x1="2" y1="12" x2="22" y2="12" />
-          <line x1="2" y1="7" x2="7" y2="7" />
-          <line x1="2" y1="17" x2="7" y2="17" />
-          <line x1="17" y1="17" x2="22" y2="17" />
-          <line x1="17" y1="7" x2="22" y2="7" />
+          <line x1="2" y1="7" x2="7" y2="7" /><line x1="17" y1="7" x2="22" y2="7" />
+          <line x1="2" y1="17" x2="7" y2="17" /><line x1="17" y1="17" x2="22" y2="17" />
         </svg>
         فیلم
       </button>
       <button className={`nbtn${tab === 'series' ? ' on' : ''}`} onClick={() => setTab('series')}>
         <svg viewBox="0 0 24 24">
-          <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+          <rect x="2" y="7" width="20" height="15" rx="2" />
           <polyline points="17 2 12 7 7 2" />
         </svg>
         سریال

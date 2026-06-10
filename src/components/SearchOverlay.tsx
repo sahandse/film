@@ -16,16 +16,13 @@ export default function SearchOverlay({ open, all, onClose, onOpen }: Props) {
   useEffect(() => {
     if (open) {
       setQ('')
-      setTimeout(() => inputRef.current?.focus(), 100)
+      setTimeout(() => inputRef.current?.focus(), 80)
     }
   }, [open])
 
-  const results =
-    q.length > 1
-      ? all
-          .filter(i => i.title.includes(q) || i.desc.includes(q))
-          .slice(0, 40)
-      : []
+  const results = q.length > 1
+    ? all.filter(i => i.title.includes(q) || i.desc.includes(q)).slice(0, 40)
+    : []
 
   return (
     <div className={`search-ovl${open ? ' on' : ''}`}>
@@ -33,20 +30,18 @@ export default function SearchOverlay({ open, all, onClose, onOpen }: Props) {
         <input
           ref={inputRef}
           className="sinput"
-          placeholder="جستجو..."
+          placeholder="جستجوی فیلم، سریال، انیمه..."
           value={q}
           onChange={e => setQ(e.target.value)}
         />
-        <button className="sclose-btn" onClick={onClose}>
-          بستن
-        </button>
+        <button className="sclose-btn" onClick={onClose}>بستن</button>
       </div>
-      <div id="sresults">
+      <div className="sresults">
         {results.map(item => (
-          <Card key={item.id} item={item} onOpen={onOpen} />
+          <Card key={item.id} item={item} onOpen={i => { onClose(); onOpen(i) }} />
         ))}
         {q.length > 1 && !results.length && (
-          <p style={{ color: 'var(--sub)', gridColumn: '1/-1', padding: '20px 0' }}>
+          <p style={{ color: 'var(--sub)', gridColumn: '1/-1', padding: '24px 0', textAlign: 'center' }}>
             نتیجه‌ای یافت نشد
           </p>
         )}

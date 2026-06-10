@@ -5,7 +5,7 @@ export interface Item {
   desc: string
   year?: string
   catId: string
-  source: 'tmdb' | 'jikan' | 'anilist' | 'tvmaze' | 'static'
+  source: 'tmdb' | 'jikan' | 'anilist' | 'tvmaze'
   sourceId?: number | string
   tmdbType?: 'movie' | 'tv'
   rating?: number
@@ -16,7 +16,7 @@ export interface Category {
   id: string
   label: string
   icon: string
-  badge?: string
+  badge: string
 }
 
 export interface DetailData {
